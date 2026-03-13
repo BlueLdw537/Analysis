@@ -31,3 +31,7 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Generated outputs
+output/*
+!output/.gitkeep

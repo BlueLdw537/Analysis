@@ -1,84 +1,89 @@
-# src 脚本说明
+# src 脚本索引
 
-本文档说明 `Analysis/src` 目录下各功能脚本的用途和差异，便于快速选择运行入口。
+本目录仅保留“可直接运行”的功能脚本入口，方便快速执行。
 
-## 文件清单
+## 快速开始
 
-- `scan_a_share_quarterly_revenue_growth.py`
-- `run_once_a_share_2025q4_24h_scan.py`
-- `__init__.py`（包初始化文件，无业务逻辑）
+```powershell
+cd Analysis/src
+python .\scan_a_share_quarterly_revenue_growth.py --help
+```
 
-## 1) scan_a_share_quarterly_revenue_growth.py
+## 脚本清单
 
-### 作用
+| 脚本 | 作用 | 常用命令 |
+| --- | --- | --- |
+| `scan_a_share_quarterly_revenue_growth.py` | 单季度营收同比扫描（通用版） | `python .\scan_a_share_quarterly_revenue_growth.py --year 2025 --quarter Q4 --growth-threshold 20` |
+| `run_once_a_share_2025q4_24h_scan.py` | 最近 N 小时公告窗口扫描 | `python .\run_once_a_share_2025q4_24h_scan.py --target-year 2025 --target-quarter Q4 --notice-within-hours 24` |
+| `scan_a_share_interval_change.py` | 按年份区间筛选涨跌幅 | `python .\scan_a_share_interval_change.py --StartYear 2020 --EndYear 2025 --Direction rise --ChangeThresholdPct 200` |
+| `run_revenue_event_analysis.py` | 财报事件后 N 月收益/回撤统计 | `python .\run_revenue_event_analysis.py --Codes 600000,000001 --WindowMonths 2` |
+| `scan_industry_term_frequency.py` | 近 N 天行业词频统计（CSV） | `python .\scan_industry_term_frequency.py --lookback-days 10` |
 
-通用版 A 股单季度营收同比扫描脚本。  
-面向“指定年份 + 指定季度”的常规分析，不限制公告发布时间窗口。
+## 详细运行示例
 
-### 主要功能
+### 1) 单季度营收同比扫描（通用）
 
-- 拉取东财财报接口数据（分页 + 重试）
-- 将累计营收转换为单季度营收（Q2=Q2累计-Q1累计，Q3/Q4 同理）
-- 对比上一年同季度，计算单季度营收同比增速
-- 补充行业/市值/上市日期信息（含补充接口）
-- 输出 Excel（`Summary` + `Result` 两个工作表，含表格样式）
-- 打印 JSON 摘要（输出路径、命中数量等）
+```powershell
+python .\scan_a_share_quarterly_revenue_growth.py `
+  --year 2025 `
+  --quarter Q4 `
+  --growth-threshold 20 `
+  --output-path ..\output\a_share_2025_q4_scan.xlsx `
+  --max-retry 4
+```
 
-### 关键参数
+### 2) 最近公告窗口扫描（24h 可调）
 
-- `--year`：目标年份（如 2025）
-- `--quarter`：目标季度（`Q1/Q2/Q3/Q4`）
-- `--growth-threshold`：同比阈值（默认 20）
-- `--output-path`：输出 Excel 完整路径
-- `--max-retry`：接口重试次数（默认 4）
+```powershell
+python .\run_once_a_share_2025q4_24h_scan.py `
+  --target-year 2025 `
+  --target-quarter Q4 `
+  --notice-within-hours 24 `
+  --growth-threshold 20 `
+  --output-dir ..\output `
+  --max-retry 4
+```
 
-### 默认输出
+### 3) 区间涨跌幅扫描
 
-未传 `--output-path` 时，输出到当前工作目录下的 `output/`，文件名示例：  
-`a_share_2025_Q4_single_revenue_yoy_gt20_20260312_194619.xlsx`
+```powershell
+python .\scan_a_share_interval_change.py `
+  --StartYear 2020 `
+  --EndYear 2025 `
+  --Direction rise `
+  --ChangeThresholdPct 200 `
+  --TopN 200 `
+  --OutputPath ..\output\a_share_interval_2020_2025.xlsx
+```
 
-### 适用场景
+### 4) 营收事件回测
 
-- 做某一季度的完整同比筛选
-- 不要求“最近 N 小时公告”限制
+```powershell
+python .\run_revenue_event_analysis.py `
+  --Codes 600000,000001 `
+  --WindowMonths 2 `
+  --YoyThreshold 20 `
+  --ProfitThreshold 20 `
+  --LossThreshold 20 `
+  --OutputDir ..\output
+```
 
-## 2) run_once_a_share_2025q4_24h_scan.py
+### 5) 行业词频统计
 
-### 作用
+```powershell
+python .\scan_industry_term_frequency.py `
+  --lookback-days 10 `
+  --top-level1 3 `
+  --top-level2 10 `
+  --top-level3 10 `
+  --output-path ..\output\industry_term_frequency.csv
+```
 
-一次性扫描版脚本，核心是“最近 N 小时内发布公告”的窗口过滤。  
-这是从原 PowerShell 脚本迁移来的 Python 版本。
+## 输出目录约定
 
-### 主要功能
+- 默认输出目录：`Analysis/output`
+- `output/` 下结果文件已在 `.gitignore` 中忽略，不会污染版本库
 
-- 拉取东财财报接口数据（分页 + 重试）
-- 计算单季度营收并对比上年同季度同比
-- 仅保留“目标季度且公告时间在最近 N 小时内”的公司
-- 过滤同比增速大于阈值的标的
-- 输出 Excel（`Summary` + `Result`，表格样式与模板一致）
-- 打印 JSON 摘要（`success/matched_companies/output_excel`）
+## 维护说明
 
-### 关键参数
-
-- `--TargetYear` 或 `--target-year`：目标年份（默认 2025）
-- `--TargetQuarter` 或 `--target-quarter`：目标季度（默认 `Q4`）
-- `--GrowthThreshold` 或 `--growth-threshold`：同比阈值（默认 20）
-- `--NoticeWithinHours` 或 `--notice-within-hours`：公告窗口小时数（默认 24，范围 1-168）
-- `--OutputDir` 或 `--output-dir`：输出目录（默认 `Analysis/output`）
-- `--MaxRetry` 或 `--max-retry`：接口重试次数（默认 4）
-
-### 默认输出
-
-默认输出目录：`Analysis/output`  
-文件名示例：  
-`a_share_2025q4_24h_once_result_20260312_212530.xlsx`
-
-### 适用场景
-
-- 每日/每小时滚动看“近 24 小时（或自定义小时）新公告”的高增长公司
-- 替代原 `run_once_a_share_2025q4_24h_scan.ps1` 运行链路
-
-## 如何选择
-
-- 需要“通用季度分析、覆盖面更全”：用 `scan_a_share_quarterly_revenue_growth.py`
-- 需要“最近 N 小时公告窗口监控”：用 `run_once_a_share_2025q4_24h_scan.py`
+- 详细的架构约定与目录职责：`../docs/ARCHITECTURE.md`

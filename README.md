@@ -1,23 +1,28 @@
 # Analysis
 
-一个用于存放多功能分析脚本的仓库骨架，当前只提供结构与工程规范，不包含具体业务脚本。
+用于 A 股数据扫描与专题分析的脚本仓库，当前聚焦 3 类任务：
+- 财报营收相关扫描
+- 区间涨跌幅筛选
+- 行业词频与主题热度统计
 
-## 目录结构
+## 当前目录结构
 
 ```text
 Analysis/
-├── .github/
-│   ├── workflows/
-│   │   └── ci.yml
-│   └── ISSUE_TEMPLATE/
-│       ├── bug_report.md
-│       └── feature_request.md
+├── .github/                    # CI 与 issue 模板
 ├── docs/
-│   └── images/
-├── src/
-│   └── __init__.py
+│   ├── ARCHITECTURE.md         # 架构说明（详细）
+│   └── templates/
+│       └── output_template.xlsx
+├── output/                     # 分析产物目录（默认输出，已忽略）
+├── src/                        # 所有可执行脚本入口
+│   ├── README.md               # 脚本索引与运行指令
+│   ├── scan_a_share_quarterly_revenue_growth.py
+│   ├── run_once_a_share_2025q4_24h_scan.py
+│   ├── scan_a_share_interval_change.py
+│   ├── run_revenue_event_analysis.py
+│   └── scan_industry_term_frequency.py
 ├── tests/
-│   └── test_smoke.py
 ├── .gitignore
 ├── LICENSE
 ├── README.md
@@ -26,13 +31,20 @@ Analysis/
 
 ## 快速开始
 
-1. 创建并激活虚拟环境
-2. 安装依赖：`pip install -r requirements.txt`
-3. 运行测试：`pytest -q`
+```powershell
+cd Analysis
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+pytest -q
+```
 
-## 开发约定
+## 运行脚本
 
-- 新功能脚本放在 `src/`
-- 对应测试放在 `tests/`
-- 文档和示意图放在 `docs/`
-- 通过 Pull Request 合并改动
+所有脚本运行说明见：
+- [src/README.md](src/README.md)
+
+## 架构说明
+
+完整的目录分层与维护约定见：
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
