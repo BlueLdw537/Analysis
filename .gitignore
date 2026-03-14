@@ -35,3 +35,4 @@ Thumbs.db
 # Generated outputs
 output/*
 !output/.gitkeep
+src/output/*

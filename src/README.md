@@ -17,7 +17,7 @@ python .\scan_a_share_quarterly_revenue_growth.py --help
 | `run_once_a_share_2025q4_24h_scan.py` | 最近 N 小时公告窗口扫描 | `python .\run_once_a_share_2025q4_24h_scan.py --target-year 2025 --target-quarter Q4 --notice-within-hours 24` |
 | `scan_a_share_interval_change.py` | 按年份区间筛选涨跌幅 | `python .\scan_a_share_interval_change.py --StartYear 2020 --EndYear 2025 --Direction rise --ChangeThresholdPct 200` |
 | `run_revenue_event_analysis.py` | 财报事件后 N 月收益/回撤统计 | `python .\run_revenue_event_analysis.py --Codes 600000,000001 --WindowMonths 2` |
-| `scan_industry_term_frequency.py` | 近 N 天行业词频统计（CSV） | `python .\scan_industry_term_frequency.py --lookback-days 10` |
+| `scan_industry_term_frequency.py` | 近 N 天行业词频统计（CSV） | `python .\scan_industry_term_frequency.py --lookback-days 3` |
 
 ## 详细运行示例
 
@@ -72,12 +72,17 @@ python .\run_revenue_event_analysis.py `
 
 ```powershell
 python .\scan_industry_term_frequency.py `
-  --lookback-days 10 `
+  --lookback-days 3 `
   --top-level1 3 `
-  --top-level2 10 `
+  --top-level2 5 `
   --top-level3 10 `
+  --top-level4 15 `
+  --sources public_rss,baidu,bing,msn_edge,google,google_en,gdelt `
   --output-path ..\output\industry_term_frequency.csv
 ```
+
+- A股行业词表默认读取：`src/taxonomy/a_share_sw_taxonomy.json`（由 AkShare `sw_index_*` 数据生成）
+- 美股行业词表默认读取：`src/taxonomy/gics_us_taxonomy.json`
 
 ## 输出目录约定
 

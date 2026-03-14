@@ -1,0 +1,1893 @@
+[
+  {
+    "level1": "Energy",
+    "aliases": [
+      "Energy",
+      "??",
+      "oil",
+      "gas"
+    ],
+    "level2": [
+      {
+        "name": "Energy",
+        "aliases": [
+          "Energy"
+        ],
+        "level3": [
+          {
+            "name": "Energy Equipment & Services",
+            "aliases": [
+              "Energy Equipment & Services"
+            ],
+            "level4": [
+              {
+                "name": "Oil & Gas Drilling",
+                "aliases": [
+                  "Oil & Gas Drilling"
+                ]
+              },
+              {
+                "name": "Oil & Gas Equipment & Services",
+                "aliases": [
+                  "Oil & Gas Equipment & Services"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Oil, Gas & Consumable Fuels",
+            "aliases": [
+              "Oil, Gas & Consumable Fuels"
+            ],
+            "level4": [
+              {
+                "name": "Coal & Consumable Fuels",
+                "aliases": [
+                  "Coal & Consumable Fuels"
+                ]
+              },
+              {
+                "name": "Integrated Oil & Gas",
+                "aliases": [
+                  "Integrated Oil & Gas"
+                ]
+              },
+              {
+                "name": "Oil & Gas Exploration & Production",
+                "aliases": [
+                  "Oil & Gas Exploration & Production"
+                ]
+              },
+              {
+                "name": "Oil & Gas Refining & Marketing",
+                "aliases": [
+                  "Oil & Gas Refining & Marketing"
+                ]
+              },
+              {
+                "name": "Oil & Gas Storage & Transportation",
+                "aliases": [
+                  "Oil & Gas Storage & Transportation"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level1": "Materials",
+    "aliases": [
+      "Materials",
+      "???",
+      "metals",
+      "chemicals"
+    ],
+    "level2": [
+      {
+        "name": "Materials",
+        "aliases": [
+          "Materials"
+        ],
+        "level3": [
+          {
+            "name": "Chemicals",
+            "aliases": [
+              "Chemicals"
+            ],
+            "level4": [
+              {
+                "name": "Commodity Chemicals",
+                "aliases": [
+                  "Commodity Chemicals"
+                ]
+              },
+              {
+                "name": "Diversified Chemicals",
+                "aliases": [
+                  "Diversified Chemicals"
+                ]
+              },
+              {
+                "name": "Fertilizers & Agricultural Chemicals",
+                "aliases": [
+                  "Fertilizers & Agricultural Chemicals"
+                ]
+              },
+              {
+                "name": "Industrial Gases",
+                "aliases": [
+                  "Industrial Gases"
+                ]
+              },
+              {
+                "name": "Specialty Chemicals",
+                "aliases": [
+                  "Specialty Chemicals"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Construction Materials",
+            "aliases": [
+              "Construction Materials"
+            ],
+            "level4": [
+              {
+                "name": "Construction Materials",
+                "aliases": [
+                  "Construction Materials"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Containers & Packaging",
+            "aliases": [
+              "Containers & Packaging"
+            ],
+            "level4": [
+              {
+                "name": "Metal, Glass & Plastic Containers",
+                "aliases": [
+                  "Metal, Glass & Plastic Containers"
+                ]
+              },
+              {
+                "name": "Paper & Plastic Packaging Products & Materials",
+                "aliases": [
+                  "Paper & Plastic Packaging Products & Materials"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Metals & Mining",
+            "aliases": [
+              "Metals & Mining"
+            ],
+            "level4": [
+              {
+                "name": "Aluminum",
+                "aliases": [
+                  "Aluminum"
+                ]
+              },
+              {
+                "name": "Copper",
+                "aliases": [
+                  "Copper"
+                ]
+              },
+              {
+                "name": "Diversified Metals & Mining",
+                "aliases": [
+                  "Diversified Metals & Mining"
+                ]
+              },
+              {
+                "name": "Gold",
+                "aliases": [
+                  "Gold"
+                ]
+              },
+              {
+                "name": "Precious Metals & Minerals",
+                "aliases": [
+                  "Precious Metals & Minerals"
+                ]
+              },
+              {
+                "name": "Silver",
+                "aliases": [
+                  "Silver"
+                ]
+              },
+              {
+                "name": "Steel",
+                "aliases": [
+                  "Steel"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Paper & Forest Products",
+            "aliases": [
+              "Paper & Forest Products"
+            ],
+            "level4": [
+              {
+                "name": "Forest Products",
+                "aliases": [
+                  "Forest Products"
+                ]
+              },
+              {
+                "name": "Paper Products",
+                "aliases": [
+                  "Paper Products"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level1": "Industrials",
+    "aliases": [
+      "Industrials",
+      "??",
+      "manufacturing",
+      "transportation"
+    ],
+    "level2": [
+      {
+        "name": "Capital Goods",
+        "aliases": [
+          "Capital Goods"
+        ],
+        "level3": [
+          {
+            "name": "Aerospace & Defense",
+            "aliases": [
+              "Aerospace & Defense"
+            ],
+            "level4": [
+              {
+                "name": "Aerospace & Defense",
+                "aliases": [
+                  "Aerospace & Defense"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Building Products",
+            "aliases": [
+              "Building Products"
+            ],
+            "level4": [
+              {
+                "name": "Building Products",
+                "aliases": [
+                  "Building Products"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Construction & Engineering",
+            "aliases": [
+              "Construction & Engineering"
+            ],
+            "level4": [
+              {
+                "name": "Construction & Engineering",
+                "aliases": [
+                  "Construction & Engineering"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Electrical Equipment",
+            "aliases": [
+              "Electrical Equipment"
+            ],
+            "level4": [
+              {
+                "name": "Electrical Components & Equipment",
+                "aliases": [
+                  "Electrical Components & Equipment"
+                ]
+              },
+              {
+                "name": "Heavy Electrical Equipment",
+                "aliases": [
+                  "Heavy Electrical Equipment"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Industrial Conglomerates",
+            "aliases": [
+              "Industrial Conglomerates"
+            ],
+            "level4": [
+              {
+                "name": "Industrial Conglomerates",
+                "aliases": [
+                  "Industrial Conglomerates"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Machinery",
+            "aliases": [
+              "Machinery"
+            ],
+            "level4": [
+              {
+                "name": "Agricultural & Farm Machinery",
+                "aliases": [
+                  "Agricultural & Farm Machinery"
+                ]
+              },
+              {
+                "name": "Construction Machinery & Heavy Transportation Equipment",
+                "aliases": [
+                  "Construction Machinery & Heavy Transportation Equipment"
+                ]
+              },
+              {
+                "name": "Industrial Machinery & Supplies & Components",
+                "aliases": [
+                  "Industrial Machinery & Supplies & Components"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Trading Companies & Distributors",
+            "aliases": [
+              "Trading Companies & Distributors"
+            ],
+            "level4": [
+              {
+                "name": "Trading Companies & Distributors",
+                "aliases": [
+                  "Trading Companies & Distributors"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Commercial & Professional Services",
+        "aliases": [
+          "Commercial & Professional Services"
+        ],
+        "level3": [
+          {
+            "name": "Commercial Services & Supplies",
+            "aliases": [
+              "Commercial Services & Supplies"
+            ],
+            "level4": [
+              {
+                "name": "Commercial Printing",
+                "aliases": [
+                  "Commercial Printing"
+                ]
+              },
+              {
+                "name": "Diversified Support Services",
+                "aliases": [
+                  "Diversified Support Services"
+                ]
+              },
+              {
+                "name": "Environmental & Facilities Services",
+                "aliases": [
+                  "Environmental & Facilities Services"
+                ]
+              },
+              {
+                "name": "Office Services & Supplies",
+                "aliases": [
+                  "Office Services & Supplies"
+                ]
+              },
+              {
+                "name": "Security & Alarm Services",
+                "aliases": [
+                  "Security & Alarm Services"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Professional Services",
+            "aliases": [
+              "Professional Services"
+            ],
+            "level4": [
+              {
+                "name": "Data Processing & Outsourced Services",
+                "aliases": [
+                  "Data Processing & Outsourced Services"
+                ]
+              },
+              {
+                "name": "Human Resource & Employment Services",
+                "aliases": [
+                  "Human Resource & Employment Services"
+                ]
+              },
+              {
+                "name": "Research & Consulting Services",
+                "aliases": [
+                  "Research & Consulting Services"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Transportation",
+        "aliases": [
+          "Transportation"
+        ],
+        "level3": [
+          {
+            "name": "Air Freight & Logistics",
+            "aliases": [
+              "Air Freight & Logistics"
+            ],
+            "level4": [
+              {
+                "name": "Air Freight & Logistics",
+                "aliases": [
+                  "Air Freight & Logistics"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Ground Transportation",
+            "aliases": [
+              "Ground Transportation"
+            ],
+            "level4": [
+              {
+                "name": "Cargo Ground Transportation",
+                "aliases": [
+                  "Cargo Ground Transportation"
+                ]
+              },
+              {
+                "name": "Passenger Ground Transportation",
+                "aliases": [
+                  "Passenger Ground Transportation"
+                ]
+              },
+              {
+                "name": "Rail Transportation",
+                "aliases": [
+                  "Rail Transportation"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Marine Transportation",
+            "aliases": [
+              "Marine Transportation"
+            ],
+            "level4": [
+              {
+                "name": "Marine Transportation",
+                "aliases": [
+                  "Marine Transportation"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Passenger Airlines",
+            "aliases": [
+              "Passenger Airlines"
+            ],
+            "level4": [
+              {
+                "name": "Passenger Airlines",
+                "aliases": [
+                  "Passenger Airlines"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Transportation Infrastructure",
+            "aliases": [
+              "Transportation Infrastructure"
+            ],
+            "level4": [
+              {
+                "name": "Airport Services",
+                "aliases": [
+                  "Airport Services"
+                ]
+              },
+              {
+                "name": "Highways & Railtracks",
+                "aliases": [
+                  "Highways & Railtracks"
+                ]
+              },
+              {
+                "name": "Marine Ports & Services",
+                "aliases": [
+                  "Marine Ports & Services"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level1": "Consumer Discretionary",
+    "aliases": [
+      "Consumer Discretionary",
+      "?????",
+      "retail",
+      "autos"
+    ],
+    "level2": [
+      {
+        "name": "Automobiles & Components",
+        "aliases": [
+          "Automobiles & Components"
+        ],
+        "level3": [
+          {
+            "name": "Automobile Components",
+            "aliases": [
+              "Automobile Components"
+            ],
+            "level4": [
+              {
+                "name": "Automotive Parts & Equipment",
+                "aliases": [
+                  "Automotive Parts & Equipment"
+                ]
+              },
+              {
+                "name": "Tires & Rubber",
+                "aliases": [
+                  "Tires & Rubber"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Automobiles",
+            "aliases": [
+              "Automobiles"
+            ],
+            "level4": [
+              {
+                "name": "Automobile Manufacturers",
+                "aliases": [
+                  "Automobile Manufacturers"
+                ]
+              },
+              {
+                "name": "Motorcycle Manufacturers",
+                "aliases": [
+                  "Motorcycle Manufacturers"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Consumer Discretionary Distribution & Retail",
+        "aliases": [
+          "Consumer Discretionary Distribution & Retail"
+        ],
+        "level3": [
+          {
+            "name": "Broadline Retail",
+            "aliases": [
+              "Broadline Retail"
+            ],
+            "level4": [
+              {
+                "name": "Broadline Retail",
+                "aliases": [
+                  "Broadline Retail"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Distributors",
+            "aliases": [
+              "Distributors"
+            ],
+            "level4": [
+              {
+                "name": "Distributors",
+                "aliases": [
+                  "Distributors"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Specialty Retail",
+            "aliases": [
+              "Specialty Retail"
+            ],
+            "level4": [
+              {
+                "name": "Apparel Retail",
+                "aliases": [
+                  "Apparel Retail"
+                ]
+              },
+              {
+                "name": "Automotive Retail",
+                "aliases": [
+                  "Automotive Retail"
+                ]
+              },
+              {
+                "name": "Computer & Electronics Retail",
+                "aliases": [
+                  "Computer & Electronics Retail"
+                ]
+              },
+              {
+                "name": "Home Improvement Retail",
+                "aliases": [
+                  "Home Improvement Retail"
+                ]
+              },
+              {
+                "name": "Homefurnishing Retail",
+                "aliases": [
+                  "Homefurnishing Retail"
+                ]
+              },
+              {
+                "name": "Other Specialty Retail",
+                "aliases": [
+                  "Other Specialty Retail"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Consumer Durables & Apparel",
+        "aliases": [
+          "Consumer Durables & Apparel"
+        ],
+        "level3": [
+          {
+            "name": "Household Durables",
+            "aliases": [
+              "Household Durables"
+            ],
+            "level4": [
+              {
+                "name": "Consumer Electronics",
+                "aliases": [
+                  "Consumer Electronics"
+                ]
+              },
+              {
+                "name": "Home Furnishings",
+                "aliases": [
+                  "Home Furnishings"
+                ]
+              },
+              {
+                "name": "Homebuilding",
+                "aliases": [
+                  "Homebuilding"
+                ]
+              },
+              {
+                "name": "Household Appliances",
+                "aliases": [
+                  "Household Appliances"
+                ]
+              },
+              {
+                "name": "Housewares & Specialties",
+                "aliases": [
+                  "Housewares & Specialties"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Leisure Products",
+            "aliases": [
+              "Leisure Products"
+            ],
+            "level4": [
+              {
+                "name": "Leisure Products",
+                "aliases": [
+                  "Leisure Products"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Textiles, Apparel & Luxury Goods",
+            "aliases": [
+              "Textiles, Apparel & Luxury Goods"
+            ],
+            "level4": [
+              {
+                "name": "Apparel, Accessories & Luxury Goods",
+                "aliases": [
+                  "Apparel, Accessories & Luxury Goods"
+                ]
+              },
+              {
+                "name": "Footwear",
+                "aliases": [
+                  "Footwear"
+                ]
+              },
+              {
+                "name": "Textiles",
+                "aliases": [
+                  "Textiles"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Consumer Services",
+        "aliases": [
+          "Consumer Services"
+        ],
+        "level3": [
+          {
+            "name": "Diversified Consumer Services",
+            "aliases": [
+              "Diversified Consumer Services"
+            ],
+            "level4": [
+              {
+                "name": "Education Services",
+                "aliases": [
+                  "Education Services"
+                ]
+              },
+              {
+                "name": "Specialized Consumer Services",
+                "aliases": [
+                  "Specialized Consumer Services"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Hotels, Restaurants & Leisure",
+            "aliases": [
+              "Hotels, Restaurants & Leisure"
+            ],
+            "level4": [
+              {
+                "name": "Casinos & Gaming",
+                "aliases": [
+                  "Casinos & Gaming"
+                ]
+              },
+              {
+                "name": "Hotels, Resorts & Cruise Lines",
+                "aliases": [
+                  "Hotels, Resorts & Cruise Lines"
+                ]
+              },
+              {
+                "name": "Leisure Facilities",
+                "aliases": [
+                  "Leisure Facilities"
+                ]
+              },
+              {
+                "name": "Restaurants",
+                "aliases": [
+                  "Restaurants"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level1": "Consumer Staples",
+    "aliases": [
+      "Consumer Staples",
+      "????",
+      "food",
+      "beverage"
+    ],
+    "level2": [
+      {
+        "name": "Consumer Staples Distribution & Retail",
+        "aliases": [
+          "Consumer Staples Distribution & Retail"
+        ],
+        "level3": [
+          {
+            "name": "Consumer Staples Distribution & Retail",
+            "aliases": [
+              "Consumer Staples Distribution & Retail"
+            ],
+            "level4": [
+              {
+                "name": "Consumer Staples Merchandise Retail",
+                "aliases": [
+                  "Consumer Staples Merchandise Retail"
+                ]
+              },
+              {
+                "name": "Drug Retail",
+                "aliases": [
+                  "Drug Retail"
+                ]
+              },
+              {
+                "name": "Food Distributors",
+                "aliases": [
+                  "Food Distributors"
+                ]
+              },
+              {
+                "name": "Food Retail",
+                "aliases": [
+                  "Food Retail"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Food, Beverage & Tobacco",
+        "aliases": [
+          "Food, Beverage & Tobacco"
+        ],
+        "level3": [
+          {
+            "name": "Beverages",
+            "aliases": [
+              "Beverages"
+            ],
+            "level4": [
+              {
+                "name": "Brewers",
+                "aliases": [
+                  "Brewers"
+                ]
+              },
+              {
+                "name": "Distillers & Vintners",
+                "aliases": [
+                  "Distillers & Vintners"
+                ]
+              },
+              {
+                "name": "Soft Drinks & Non-alcoholic Beverages",
+                "aliases": [
+                  "Soft Drinks & Non-alcoholic Beverages"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Food Products",
+            "aliases": [
+              "Food Products"
+            ],
+            "level4": [
+              {
+                "name": "Agricultural Products & Services",
+                "aliases": [
+                  "Agricultural Products & Services"
+                ]
+              },
+              {
+                "name": "Packaged Foods & Meats",
+                "aliases": [
+                  "Packaged Foods & Meats"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Tobacco",
+            "aliases": [
+              "Tobacco"
+            ],
+            "level4": [
+              {
+                "name": "Tobacco",
+                "aliases": [
+                  "Tobacco"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Household & Personal Products",
+        "aliases": [
+          "Household & Personal Products"
+        ],
+        "level3": [
+          {
+            "name": "Household Products",
+            "aliases": [
+              "Household Products"
+            ],
+            "level4": [
+              {
+                "name": "Household Products",
+                "aliases": [
+                  "Household Products"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Personal Care Products",
+            "aliases": [
+              "Personal Care Products"
+            ],
+            "level4": [
+              {
+                "name": "Personal Care Products",
+                "aliases": [
+                  "Personal Care Products"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level1": "Health Care",
+    "aliases": [
+      "Health Care",
+      "????",
+      "pharma",
+      "biotech"
+    ],
+    "level2": [
+      {
+        "name": "Health Care Equipment & Services",
+        "aliases": [
+          "Health Care Equipment & Services"
+        ],
+        "level3": [
+          {
+            "name": "Health Care Equipment & Supplies",
+            "aliases": [
+              "Health Care Equipment & Supplies"
+            ],
+            "level4": [
+              {
+                "name": "Health Care Equipment",
+                "aliases": [
+                  "Health Care Equipment"
+                ]
+              },
+              {
+                "name": "Health Care Supplies",
+                "aliases": [
+                  "Health Care Supplies"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Health Care Providers & Services",
+            "aliases": [
+              "Health Care Providers & Services"
+            ],
+            "level4": [
+              {
+                "name": "Health Care Distributors",
+                "aliases": [
+                  "Health Care Distributors"
+                ]
+              },
+              {
+                "name": "Health Care Facilities",
+                "aliases": [
+                  "Health Care Facilities"
+                ]
+              },
+              {
+                "name": "Health Care Services",
+                "aliases": [
+                  "Health Care Services"
+                ]
+              },
+              {
+                "name": "Managed Health Care",
+                "aliases": [
+                  "Managed Health Care"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Health Care Technology",
+            "aliases": [
+              "Health Care Technology"
+            ],
+            "level4": [
+              {
+                "name": "Health Care Technology",
+                "aliases": [
+                  "Health Care Technology"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Pharmaceuticals, Biotechnology & Life Sciences",
+        "aliases": [
+          "Pharmaceuticals, Biotechnology & Life Sciences"
+        ],
+        "level3": [
+          {
+            "name": "Biotechnology",
+            "aliases": [
+              "Biotechnology"
+            ],
+            "level4": [
+              {
+                "name": "Biotechnology",
+                "aliases": [
+                  "Biotechnology"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Life Sciences Tools & Services",
+            "aliases": [
+              "Life Sciences Tools & Services"
+            ],
+            "level4": [
+              {
+                "name": "Life Sciences Tools & Services",
+                "aliases": [
+                  "Life Sciences Tools & Services"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Pharmaceuticals",
+            "aliases": [
+              "Pharmaceuticals"
+            ],
+            "level4": [
+              {
+                "name": "Pharmaceuticals",
+                "aliases": [
+                  "Pharmaceuticals"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level1": "Financials",
+    "aliases": [
+      "Financials",
+      "??",
+      "banks",
+      "insurance"
+    ],
+    "level2": [
+      {
+        "name": "Banks",
+        "aliases": [
+          "Banks"
+        ],
+        "level3": [
+          {
+            "name": "Banks",
+            "aliases": [
+              "Banks"
+            ],
+            "level4": [
+              {
+                "name": "Diversified Banks",
+                "aliases": [
+                  "Diversified Banks"
+                ]
+              },
+              {
+                "name": "Regional Banks",
+                "aliases": [
+                  "Regional Banks"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Financial Services",
+        "aliases": [
+          "Financial Services"
+        ],
+        "level3": [
+          {
+            "name": "Capital Markets",
+            "aliases": [
+              "Capital Markets"
+            ],
+            "level4": [
+              {
+                "name": "Asset Management & Custody Banks",
+                "aliases": [
+                  "Asset Management & Custody Banks"
+                ]
+              },
+              {
+                "name": "Diversified Capital Markets",
+                "aliases": [
+                  "Diversified Capital Markets"
+                ]
+              },
+              {
+                "name": "Financial Exchanges & Data",
+                "aliases": [
+                  "Financial Exchanges & Data"
+                ]
+              },
+              {
+                "name": "Investment Banking & Brokerage",
+                "aliases": [
+                  "Investment Banking & Brokerage"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Consumer Finance",
+            "aliases": [
+              "Consumer Finance"
+            ],
+            "level4": [
+              {
+                "name": "Consumer Finance",
+                "aliases": [
+                  "Consumer Finance"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Financial Services",
+            "aliases": [
+              "Financial Services"
+            ],
+            "level4": [
+              {
+                "name": "Commercial & Residential Mortgage Finance",
+                "aliases": [
+                  "Commercial & Residential Mortgage Finance"
+                ]
+              },
+              {
+                "name": "Diversified Financial Services",
+                "aliases": [
+                  "Diversified Financial Services"
+                ]
+              },
+              {
+                "name": "Multi-Sector Holdings",
+                "aliases": [
+                  "Multi-Sector Holdings"
+                ]
+              },
+              {
+                "name": "Specialized Finance",
+                "aliases": [
+                  "Specialized Finance"
+                ]
+              },
+              {
+                "name": "Transaction & Payment Processing Services",
+                "aliases": [
+                  "Transaction & Payment Processing Services"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Insurance",
+        "aliases": [
+          "Insurance"
+        ],
+        "level3": [
+          {
+            "name": "Insurance",
+            "aliases": [
+              "Insurance"
+            ],
+            "level4": [
+              {
+                "name": "Insurance Brokers",
+                "aliases": [
+                  "Insurance Brokers"
+                ]
+              },
+              {
+                "name": "Life & Health Insurance",
+                "aliases": [
+                  "Life & Health Insurance"
+                ]
+              },
+              {
+                "name": "Multi-line Insurance",
+                "aliases": [
+                  "Multi-line Insurance"
+                ]
+              },
+              {
+                "name": "Property & Casualty Insurance",
+                "aliases": [
+                  "Property & Casualty Insurance"
+                ]
+              },
+              {
+                "name": "Reinsurance",
+                "aliases": [
+                  "Reinsurance"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level1": "Information Technology",
+    "aliases": [
+      "Information Technology",
+      "????",
+      "software",
+      "semiconductor"
+    ],
+    "level2": [
+      {
+        "name": "Semiconductors & Semiconductor Equipment",
+        "aliases": [
+          "Semiconductors & Semiconductor Equipment"
+        ],
+        "level3": [
+          {
+            "name": "Semiconductors & Semiconductor Equipment",
+            "aliases": [
+              "Semiconductors & Semiconductor Equipment"
+            ],
+            "level4": [
+              {
+                "name": "Semiconductor Materials & Equipment",
+                "aliases": [
+                  "Semiconductor Materials & Equipment"
+                ]
+              },
+              {
+                "name": "Semiconductors",
+                "aliases": [
+                  "Semiconductors"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Software & Services",
+        "aliases": [
+          "Software & Services"
+        ],
+        "level3": [
+          {
+            "name": "IT Services",
+            "aliases": [
+              "IT Services"
+            ],
+            "level4": [
+              {
+                "name": "IT Consulting & Other Services",
+                "aliases": [
+                  "IT Consulting & Other Services"
+                ]
+              },
+              {
+                "name": "Internet Services & Infrastructure",
+                "aliases": [
+                  "Internet Services & Infrastructure"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Software",
+            "aliases": [
+              "Software"
+            ],
+            "level4": [
+              {
+                "name": "Application Software",
+                "aliases": [
+                  "Application Software"
+                ]
+              },
+              {
+                "name": "Systems Software",
+                "aliases": [
+                  "Systems Software"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "nan",
+            "aliases": [
+              "nan"
+            ],
+            "level4": [
+              {
+                "name": "nan",
+                "aliases": [
+                  "nan"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Technology Hardware & Equipment",
+        "aliases": [
+          "Technology Hardware & Equipment"
+        ],
+        "level3": [
+          {
+            "name": "Communications Equipment",
+            "aliases": [
+              "Communications Equipment"
+            ],
+            "level4": [
+              {
+                "name": "Communications Equipment",
+                "aliases": [
+                  "Communications Equipment"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Electronic Equipment, Instruments & Components",
+            "aliases": [
+              "Electronic Equipment, Instruments & Components"
+            ],
+            "level4": [
+              {
+                "name": "Electronic Components",
+                "aliases": [
+                  "Electronic Components"
+                ]
+              },
+              {
+                "name": "Electronic Equipment & Instruments",
+                "aliases": [
+                  "Electronic Equipment & Instruments"
+                ]
+              },
+              {
+                "name": "Electronic Manufacturing Services",
+                "aliases": [
+                  "Electronic Manufacturing Services"
+                ]
+              },
+              {
+                "name": "Technology Distributors",
+                "aliases": [
+                  "Technology Distributors"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Technology Hardware, Storage & Peripherals",
+            "aliases": [
+              "Technology Hardware, Storage & Peripherals"
+            ],
+            "level4": [
+              {
+                "name": "Technology Hardware, Storage & Peripherals",
+                "aliases": [
+                  "Technology Hardware, Storage & Peripherals"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level1": "Communication Services",
+    "aliases": [
+      "Communication Services",
+      "????",
+      "telecom",
+      "media"
+    ],
+    "level2": [
+      {
+        "name": "Media & Entertainment",
+        "aliases": [
+          "Media & Entertainment"
+        ],
+        "level3": [
+          {
+            "name": "Entertainment",
+            "aliases": [
+              "Entertainment"
+            ],
+            "level4": [
+              {
+                "name": "Interactive Home Entertainment",
+                "aliases": [
+                  "Interactive Home Entertainment"
+                ]
+              },
+              {
+                "name": "Movies & Entertainment",
+                "aliases": [
+                  "Movies & Entertainment"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Interactive Media & Services",
+            "aliases": [
+              "Interactive Media & Services"
+            ],
+            "level4": [
+              {
+                "name": "Interactive Media & Services",
+                "aliases": [
+                  "Interactive Media & Services"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Media",
+            "aliases": [
+              "Media"
+            ],
+            "level4": [
+              {
+                "name": "Advertising",
+                "aliases": [
+                  "Advertising"
+                ]
+              },
+              {
+                "name": "Broadcasting",
+                "aliases": [
+                  "Broadcasting"
+                ]
+              },
+              {
+                "name": "Cable & Satellite",
+                "aliases": [
+                  "Cable & Satellite"
+                ]
+              },
+              {
+                "name": "Publishing",
+                "aliases": [
+                  "Publishing"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Telecommunication Services",
+        "aliases": [
+          "Telecommunication Services"
+        ],
+        "level3": [
+          {
+            "name": "Diversified Telecommunication Services",
+            "aliases": [
+              "Diversified Telecommunication Services"
+            ],
+            "level4": [
+              {
+                "name": "Alternative Carriers",
+                "aliases": [
+                  "Alternative Carriers"
+                ]
+              },
+              {
+                "name": "Integrated Telecommunication Services",
+                "aliases": [
+                  "Integrated Telecommunication Services"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Wireless Telecommunication Services",
+            "aliases": [
+              "Wireless Telecommunication Services"
+            ],
+            "level4": [
+              {
+                "name": "Wireless Telecommunication Services",
+                "aliases": [
+                  "Wireless Telecommunication Services"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level1": "Utilities",
+    "aliases": [
+      "Utilities",
+      "????",
+      "electric utility",
+      "water utility"
+    ],
+    "level2": [
+      {
+        "name": "Utilities",
+        "aliases": [
+          "Utilities"
+        ],
+        "level3": [
+          {
+            "name": "Electric Utilities",
+            "aliases": [
+              "Electric Utilities"
+            ],
+            "level4": [
+              {
+                "name": "Electric Utilities",
+                "aliases": [
+                  "Electric Utilities"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Gas Utilities",
+            "aliases": [
+              "Gas Utilities"
+            ],
+            "level4": [
+              {
+                "name": "Gas Utilities",
+                "aliases": [
+                  "Gas Utilities"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Independent Power and Renewable Electricity Producers",
+            "aliases": [
+              "Independent Power and Renewable Electricity Producers"
+            ],
+            "level4": [
+              {
+                "name": "Independent Power Producers & Energy Traders",
+                "aliases": [
+                  "Independent Power Producers & Energy Traders"
+                ]
+              },
+              {
+                "name": "Renewable Electricity",
+                "aliases": [
+                  "Renewable Electricity"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Multi-Utilities",
+            "aliases": [
+              "Multi-Utilities"
+            ],
+            "level4": [
+              {
+                "name": "Multi-Utilities",
+                "aliases": [
+                  "Multi-Utilities"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Water Utilities",
+            "aliases": [
+              "Water Utilities"
+            ],
+            "level4": [
+              {
+                "name": "Water Utilities",
+                "aliases": [
+                  "Water Utilities"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level1": "Real Estate",
+    "aliases": [
+      "Real Estate",
+      "???",
+      "reits",
+      "property"
+    ],
+    "level2": [
+      {
+        "name": "Equity Real Estate Investment Trusts (REITs)",
+        "aliases": [
+          "Equity Real Estate Investment Trusts (REITs)"
+        ],
+        "level3": [
+          {
+            "name": "Diversified REITs",
+            "aliases": [
+              "Diversified REITs"
+            ],
+            "level4": [
+              {
+                "name": "Diversified REITs",
+                "aliases": [
+                  "Diversified REITs"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Health Care REITs",
+            "aliases": [
+              "Health Care REITs"
+            ],
+            "level4": [
+              {
+                "name": "Health Care REITs",
+                "aliases": [
+                  "Health Care REITs"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Hotel & Resort REITs",
+            "aliases": [
+              "Hotel & Resort REITs"
+            ],
+            "level4": [
+              {
+                "name": "Hotel & Resort REITs",
+                "aliases": [
+                  "Hotel & Resort REITs"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Industrial REITs",
+            "aliases": [
+              "Industrial REITs"
+            ],
+            "level4": [
+              {
+                "name": "Industrial REITs",
+                "aliases": [
+                  "Industrial REITs"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Office REITs",
+            "aliases": [
+              "Office REITs"
+            ],
+            "level4": [
+              {
+                "name": "Office REITs",
+                "aliases": [
+                  "Office REITs"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Residential REITs",
+            "aliases": [
+              "Residential REITs"
+            ],
+            "level4": [
+              {
+                "name": "Multi-Family Residential REITs",
+                "aliases": [
+                  "Multi-Family Residential REITs"
+                ]
+              },
+              {
+                "name": "Single-Family Residential REITs",
+                "aliases": [
+                  "Single-Family Residential REITs"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Retail REITs",
+            "aliases": [
+              "Retail REITs"
+            ],
+            "level4": [
+              {
+                "name": "Retail REITs",
+                "aliases": [
+                  "Retail REITs"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Specialized REITs",
+            "aliases": [
+              "Specialized REITs"
+            ],
+            "level4": [
+              {
+                "name": "Data Center REITs",
+                "aliases": [
+                  "Data Center REITs"
+                ]
+              },
+              {
+                "name": "Other Specialized REITs",
+                "aliases": [
+                  "Other Specialized REITs"
+                ]
+              },
+              {
+                "name": "Self-Storage REITs",
+                "aliases": [
+                  "Self-Storage REITs"
+                ]
+              },
+              {
+                "name": "Telecom Tower REITs",
+                "aliases": [
+                  "Telecom Tower REITs"
+                ]
+              },
+              {
+                "name": "Timber REITs",
+                "aliases": [
+                  "Timber REITs"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Real Estate Management & Development",
+        "aliases": [
+          "Real Estate Management & Development"
+        ],
+        "level3": [
+          {
+            "name": "Real Estate Management & Development",
+            "aliases": [
+              "Real Estate Management & Development"
+            ],
+            "level4": [
+              {
+                "name": "Diversified Real Estate Activities",
+                "aliases": [
+                  "Diversified Real Estate Activities"
+                ]
+              },
+              {
+                "name": "Real Estate Development",
+                "aliases": [
+                  "Real Estate Development"
+                ]
+              },
+              {
+                "name": "Real Estate Operating Companies",
+                "aliases": [
+                  "Real Estate Operating Companies"
+                ]
+              },
+              {
+                "name": "Real Estate Services",
+                "aliases": [
+                  "Real Estate Services"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import argparse
 import csv
@@ -11,218 +11,49 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from email.utils import parsedate_to_datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 from urllib.parse import quote_plus
 
 import requests
 
 
-DEFAULT_TAXONOMY: list[dict[str, Any]] = [
-    {
-        "level1": "信息技术",
-        "aliases": ["信息技术", "数字经济", "科技"],
-        "level2": [
-            {
-                "name": "人工智能",
-                "aliases": ["人工智能", "AI", "AIGC", "生成式AI", "大模型"],
-                "level3": [
-                    {"name": "大模型", "aliases": ["大模型", "LLM", "Foundation Model"]},
-                    {"name": "智能体", "aliases": ["智能体", "AI Agent", "Agent"]},
-                    {"name": "算力", "aliases": ["算力", "GPU", "AI芯片", "加速卡"]},
-                ],
-            },
-            {
-                "name": "半导体",
-                "aliases": ["半导体", "芯片", "集成电路", "IC"],
-                "level3": [
-                    {"name": "半导体设备", "aliases": ["半导体设备", "刻蚀机", "光刻机"]},
-                    {"name": "半导体材料", "aliases": ["半导体材料", "硅片", "光刻胶"]},
-                    {"name": "封测", "aliases": ["封测", "先进封装"]},
-                ],
-            },
-            {
-                "name": "云计算",
-                "aliases": ["云计算", "数据中心", "IDC", "云服务"],
-                "level3": [
-                    {"name": "数据中心", "aliases": ["数据中心", "IDC机房"]},
-                    {"name": "服务器", "aliases": ["服务器", "云服务器"]},
-                    {"name": "网络安全", "aliases": ["网络安全", "零信任", "数据安全"]},
-                ],
-            },
-        ],
-    },
-    {
-        "level1": "医药生物",
-        "aliases": ["医药生物", "生物医药", "医疗健康"],
-        "level2": [
-            {
-                "name": "创新药",
-                "aliases": ["创新药", "新药研发", "创新疗法"],
-                "level3": [
-                    {"name": "ADC", "aliases": ["ADC", "抗体偶联药物"]},
-                    {"name": "GLP-1", "aliases": ["GLP-1", "减重药"]},
-                    {"name": "PD-1", "aliases": ["PD-1", "免疫治疗"]},
-                ],
-            },
-            {
-                "name": "医疗器械",
-                "aliases": ["医疗器械", "医械", "医疗设备"],
-                "level3": [
-                    {"name": "体外诊断", "aliases": ["体外诊断", "IVD"]},
-                    {"name": "影像设备", "aliases": ["影像设备", "CT", "MRI"]},
-                    {"name": "手术机器人", "aliases": ["手术机器人", "达芬奇"]},
-                ],
-            },
-            {
-                "name": "CXO",
-                "aliases": ["CXO", "CRO", "CDMO", "医药外包"],
-                "level3": [
-                    {"name": "临床CRO", "aliases": ["临床CRO", "临床外包"]},
-                    {"name": "CDMO", "aliases": ["CDMO", "工艺开发"]},
-                    {"name": "原料药", "aliases": ["原料药", "API"]},
-                ],
-            },
-        ],
-    },
-    {
-        "level1": "新能源",
-        "aliases": ["新能源", "绿色能源", "新型能源"],
-        "level2": [
-            {
-                "name": "新能源汽车",
-                "aliases": ["新能源汽车", "电动车", "EV", "智能汽车"],
-                "level3": [
-                    {"name": "智能驾驶", "aliases": ["智能驾驶", "自动驾驶", "NOA"]},
-                    {"name": "热管理", "aliases": ["热管理", "热泵"]},
-                    {"name": "车载芯片", "aliases": ["车载芯片", "智能座舱芯片"]},
-                ],
-            },
-            {
-                "name": "储能",
-                "aliases": ["储能", "储能电站", "电化学储能"],
-                "level3": [
-                    {"name": "锂电池", "aliases": ["锂电池", "动力电池", "电池"]},
-                    {"name": "逆变器", "aliases": ["逆变器", "PCS"]},
-                    {"name": "BMS", "aliases": ["BMS", "电池管理系统"]},
-                ],
-            },
-            {
-                "name": "光伏风电",
-                "aliases": ["光伏", "风电", "新能源发电"],
-                "level3": [
-                    {"name": "光伏组件", "aliases": ["光伏组件", "电池片"]},
-                    {"name": "海上风电", "aliases": ["海上风电", "海风"]},
-                    {"name": "硅料", "aliases": ["硅料", "硅片"]},
-                ],
-            },
-        ],
-    },
-    {
-        "level1": "消费服务",
-        "aliases": ["消费服务", "消费", "内需"],
-        "level2": [
-            {
-                "name": "消费电子",
-                "aliases": ["消费电子", "智能手机", "可穿戴"],
-                "level3": [
-                    {"name": "ARVR", "aliases": ["AR", "VR", "MR"]},
-                    {"name": "折叠屏", "aliases": ["折叠屏"]},
-                    {"name": "声学", "aliases": ["声学器件", "TWS"]},
-                ],
-            },
-            {
-                "name": "食品饮料",
-                "aliases": ["食品饮料", "白酒", "乳制品", "饮料"],
-                "level3": [
-                    {"name": "白酒", "aliases": ["白酒"]},
-                    {"name": "啤酒", "aliases": ["啤酒"]},
-                    {"name": "休闲食品", "aliases": ["休闲食品", "零食"]},
-                ],
-            },
-            {
-                "name": "旅游酒店",
-                "aliases": ["旅游", "酒店", "出行", "文旅"],
-                "level3": [
-                    {"name": "免税", "aliases": ["免税"]},
-                    {"name": "景区", "aliases": ["景区", "景点"]},
-                    {"name": "航空出行", "aliases": ["航空出行", "机票"]},
-                ],
-            },
-        ],
-    },
-    {
-        "level1": "资源周期",
-        "aliases": ["资源周期", "周期行业", "大宗商品"],
-        "level2": [
-            {
-                "name": "有色金属",
-                "aliases": ["有色金属", "铜", "铝", "锂", "稀土"],
-                "level3": [
-                    {"name": "铜", "aliases": ["铜"]},
-                    {"name": "铝", "aliases": ["铝"]},
-                    {"name": "稀土", "aliases": ["稀土"]},
-                ],
-            },
-            {
-                "name": "油气化工",
-                "aliases": ["石油", "天然气", "化工", "炼化", "油气"],
-                "level3": [
-                    {"name": "原油", "aliases": ["原油", "油价"]},
-                    {"name": "天然气", "aliases": ["天然气", "LNG"]},
-                    {"name": "煤化工", "aliases": ["煤化工"]},
-                ],
-            },
-            {
-                "name": "煤炭钢铁",
-                "aliases": ["煤炭", "钢铁", "焦煤", "焦炭"],
-                "level3": [
-                    {"name": "动力煤", "aliases": ["动力煤"]},
-                    {"name": "焦煤焦炭", "aliases": ["焦煤", "焦炭"]},
-                    {"name": "螺纹钢", "aliases": ["螺纹钢"]},
-                ],
-            },
-        ],
-    },
-    {
-        "level1": "金融地产",
-        "aliases": ["金融地产", "地产金融", "金融"],
-        "level2": [
-            {
-                "name": "银行保险",
-                "aliases": ["银行", "保险"],
-                "level3": [
-                    {"name": "城商行", "aliases": ["城商行"]},
-                    {"name": "寿险", "aliases": ["寿险"]},
-                    {"name": "财险", "aliases": ["财险"]},
-                ],
-            },
-            {
-                "name": "券商",
-                "aliases": ["券商", "证券公司", "投行"],
-                "level3": [
-                    {"name": "经纪业务", "aliases": ["经纪业务"]},
-                    {"name": "自营业务", "aliases": ["自营业务"]},
-                    {"name": "投行业务", "aliases": ["投行业务", "IPO"]},
-                ],
-            },
-            {
-                "name": "房地产",
-                "aliases": ["房地产", "物业", "保交楼", "保障房"],
-                "level3": [
-                    {"name": "物业服务", "aliases": ["物业服务", "物业管理"]},
-                    {"name": "保障房", "aliases": ["保障房"]},
-                    {"name": "城中村改造", "aliases": ["城中村改造"]},
-                ],
-            },
-        ],
-    },
-]
+DEFAULT_A_SHARE_TAXONOMY_FILE = "taxonomy/a_share_sw_taxonomy.json"
+DEFAULT_US_TAXONOMY_FILE = "taxonomy/gics_us_taxonomy.json"
+DEFAULT_TAXONOMY: list[dict[str, Any]] = []
 
 DEFAULT_QUERIES = [
     "中国 产业 政策",
     "中国 行业 新闻",
     "A股 行业",
     "宏观 经济 产业链",
+    "US stock sector news",
+    "S&P 500 industry news",
+    "Wall Street sector rotation",
+]
+
+PUBLIC_MEDIA_RSS_FEEDS: list[dict[str, str]] = [
+    {"name": "sky_home", "url": "https://feeds.skynews.com/feeds/rss/home.xml"},
+    {"name": "sky_world", "url": "https://feeds.skynews.com/feeds/rss/world.xml"},
+    {"name": "sky_business", "url": "https://feeds.skynews.com/feeds/rss/business.xml"},
+    {"name": "wapo_world", "url": "https://feeds.washingtonpost.com/rss/world"},
+    {"name": "wapo_business", "url": "https://feeds.washingtonpost.com/rss/business"},
+    {"name": "abc_topstories", "url": "https://feeds.abcnews.com/abcnews/topstories"},
+    {"name": "abc_international", "url": "https://feeds.abcnews.com/abcnews/internationalheadlines"},
+    {"name": "fox_latest", "url": "https://moxie.foxnews.com/google-publisher/latest.xml"},
+    {"name": "fox_business", "url": "https://moxie.foxnews.com/google-publisher/business.xml"},
+    {"name": "guardian_world", "url": "https://www.theguardian.com/world/rss"},
+    {"name": "guardian_business", "url": "https://www.theguardian.com/business/rss"},
+    {"name": "guardian_technology", "url": "https://www.theguardian.com/technology/rss"},
+    {"name": "dw_top", "url": "http://rss.dw.com/rdf/rss-en-top"},
+    {"name": "dw_business", "url": "http://rss.dw.com/rdf/rss-en-bus"},
+    {"name": "lemonde_international", "url": "https://www.lemonde.fr/en/international/rss_full.xml"},
+]
+
+BAIDU_RSS_FEEDS: list[dict[str, str]] = [
+    {"name": "baidu_finannews", "url": "https://news.baidu.com/n?cmd=4&class=finannews&tn=rss"},
+    {"name": "baidu_technnews", "url": "https://news.baidu.com/n?cmd=4&class=technnews&tn=rss"},
+    {"name": "baidu_civilnews", "url": "https://news.baidu.com/n?cmd=4&class=civilnews&tn=rss"},
+    {"name": "baidu_enternews", "url": "https://news.baidu.com/n?cmd=4&class=enternews&tn=rss"},
 ]
 
 
@@ -276,17 +107,19 @@ class RetryClient:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="按行业词汇统计公开新闻近N天词频")
-    parser.add_argument("--lookback-days", type=int, default=10, help="抓取时间范围（天），默认10")
+    parser.add_argument("--lookback-days", type=int, default=3, help="抓取时间范围（天），默认3")
     parser.add_argument("--top-level1", type=int, default=3, help="输出一级行业TopN，默认3")
-    parser.add_argument("--top-level2", type=int, default=10, help="输出二级行业TopN，默认10")
+    parser.add_argument("--top-level2", type=int, default=5, help="输出二级行业TopN，默认5")
     parser.add_argument("--top-level3", type=int, default=10, help="输出三级行业TopN，默认10")
+    parser.add_argument("--top-level4", type=int, default=15, help="输出四级行业TopN，默认15")
     parser.add_argument("--output-path", default="", help="输出CSV路径")
     parser.add_argument("--max-retry", type=int, default=3, help="网络重试次数，默认3")
     parser.add_argument("--max-items-per-query", type=int, default=120, help="每个查询最多解析条目数")
+    parser.add_argument("--max-items-per-feed", type=int, default=80, help="每个公开RSS最多解析条目数")
     parser.add_argument(
         "--sources",
-        default="bing,google,google_en,gdelt",
-        help="新闻源，逗号分隔：bing,google,google_en,gdelt",
+        default="public_rss,baidu,bing,msn_edge,google,google_en,gdelt",
+        help="新闻源，逗号分隔：public_rss,baidu,bing,msn_edge,google,google_en,gdelt",
     )
     parser.add_argument(
         "--query",
@@ -297,7 +130,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--taxonomy-path",
         default="",
-        help="可选行业词表JSON路径。为空时使用内置词表。",
+        help=f"可选A股行业词表JSON路径。为空时默认使用 src/{DEFAULT_A_SHARE_TAXONOMY_FILE}。",
+    )
+    parser.add_argument(
+        "--us-taxonomy-path",
+        default="",
+        help=f"美股GICS词表JSON路径。为空时默认使用 src/{DEFAULT_US_TAXONOMY_FILE}。",
     )
     parser.add_argument("--debug", action="store_true", help="输出抓取诊断信息")
     return parser.parse_args()
@@ -404,6 +242,24 @@ def fetch_bing_news_rss(
     return [item for item in parsed if item.published_at >= cutoff]
 
 
+def fetch_msn_edge_news_rss(
+    client: RetryClient,
+    query: str,
+    lookback_days: int,
+    max_items_per_query: int,
+    now: datetime,
+) -> list[NewsItem]:
+    # Edge/MSN news traffic commonly originates from Bing News endpoints.
+    url = (
+        "https://www.bing.com/news/search"
+        f"?q={quote_plus(query)}&format=rss&setlang=en-US&mkt=en-US&form=PTFTNR"
+    )
+    xml_text = client.get_text(url)
+    parsed = parse_rss_items(xml_text, query=query, source_name="msn_edge", now=now, max_items=max_items_per_query)
+    cutoff = now - timedelta(days=max(1, lookback_days))
+    return [item for item in parsed if item.published_at >= cutoff]
+
+
 def fetch_google_news_rss(
     client: RetryClient,
     query: str,
@@ -471,19 +327,46 @@ def fetch_gdelt_items(
     return out
 
 
+def normalize_leaf(raw: Any, fallback_name: str = "") -> dict[str, Any] | None:
+    if isinstance(raw, str):
+        name = raw.strip()
+        if not name:
+            return None
+        return {"name": name, "aliases": [name]}
+
+    if not isinstance(raw, dict):
+        return None
+    name = str(raw.get("name") or raw.get("level4") or fallback_name).strip()
+    if not name:
+        return None
+    aliases_raw = raw.get("aliases") or raw.get("keywords") or raw.get("level4_keywords") or [name]
+    if not isinstance(aliases_raw, list):
+        aliases_raw = [name]
+    aliases = [str(item).strip() for item in aliases_raw if str(item).strip()]
+    if not aliases:
+        aliases = [name]
+    return {"name": name, "aliases": aliases}
+
+
 def normalize_term(raw: Any, fallback_name: str = "") -> dict[str, Any] | None:
     if isinstance(raw, str):
         name = raw.strip()
         if not name:
             return None
-        return {"name": name, "aliases": [name], "level3": []}
+        return {"name": name, "aliases": [name], "level3": [], "level4": []}
 
     if not isinstance(raw, dict):
         return None
-    name = str(raw.get("name") or raw.get("level2") or fallback_name).strip()
+    name = str(raw.get("name") or raw.get("level2") or raw.get("level3") or fallback_name).strip()
     if not name:
         return None
-    aliases_raw = raw.get("aliases") or raw.get("keywords") or raw.get("level2_keywords") or [name]
+    aliases_raw = (
+        raw.get("aliases")
+        or raw.get("keywords")
+        or raw.get("level2_keywords")
+        or raw.get("level3_keywords")
+        or [name]
+    )
     if not isinstance(aliases_raw, list):
         aliases_raw = [name]
     aliases = [str(item).strip() for item in aliases_raw if str(item).strip()]
@@ -496,10 +379,17 @@ def normalize_term(raw: Any, fallback_name: str = "") -> dict[str, Any] | None:
         for node in level3_raw:
             normalized = normalize_term(node)
             if normalized:
-                normalized["level3"] = []
                 level3.append(normalized)
 
-    return {"name": name, "aliases": aliases, "level3": level3}
+    level4_raw = raw.get("level4") or []
+    level4: list[dict[str, Any]] = []
+    if isinstance(level4_raw, list):
+        for node in level4_raw:
+            normalized = normalize_leaf(node)
+            if normalized:
+                level4.append(normalized)
+
+    return {"name": name, "aliases": aliases, "level3": level3, "level4": level4}
 
 
 def normalize_taxonomy(raw: Any) -> list[dict[str, Any]]:
@@ -533,14 +423,27 @@ def normalize_taxonomy(raw: Any) -> list[dict[str, Any]]:
     return out
 
 
-def load_taxonomy(taxonomy_path: Path | None) -> list[dict[str, Any]]:
+def load_taxonomy(
+    taxonomy_path: Path | None,
+    default_taxonomy: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
     if taxonomy_path and taxonomy_path.exists():
         payload = taxonomy_path.read_text(encoding="utf-8")
         loaded = json.loads(payload)
         normalized = normalize_taxonomy(loaded)
         if normalized:
             return normalized
-    return normalize_taxonomy(DEFAULT_TAXONOMY)
+    return normalize_taxonomy(default_taxonomy)
+
+
+def resolve_default_taxonomy_path(script_dir: Path, default_rel_path: str, legacy_file_name: str) -> Path:
+    default_path = script_dir / default_rel_path
+    if default_path.exists():
+        return default_path
+    legacy_path = script_dir / legacy_file_name
+    if legacy_path.exists():
+        return legacy_path
+    return default_path
 
 
 def build_queries(taxonomy: list[dict[str, Any]], custom_queries: list[str]) -> list[str]:
@@ -580,10 +483,11 @@ def count_term_hits(text_lower: str, aliases: list[str]) -> int:
 def aggregate_industry_frequency(
     items: list[NewsItem],
     taxonomy: list[dict[str, Any]],
-) -> tuple[Counter[str], Counter[tuple[str, str]], Counter[tuple[str, str, str]]]:
-    level1_counter: Counter[str] = Counter()
-    level2_counter: Counter[tuple[str, str]] = Counter()
-    level3_counter: Counter[tuple[str, str, str]] = Counter()
+) -> dict[str, Counter[Any]]:
+    hot_level1: Counter[str] = Counter()
+    hot_level2: Counter[tuple[str, str]] = Counter()
+    hot_level3: Counter[tuple[str, str, str]] = Counter()
+    hot_level4: Counter[tuple[str, str, str, str]] = Counter()
 
     for item in items:
         text = f"{item.title} {item.summary}".strip().lower()
@@ -599,6 +503,7 @@ def aggregate_industry_frequency(
 
             level2_total = 0
             level3_total = 0
+            level4_total = 0
             for level2 in sector.get("level2") or []:
                 l2_name = str(level2.get("name") or "").strip()
                 if not l2_name:
@@ -606,7 +511,7 @@ def aggregate_industry_frequency(
                 l2_aliases = level2.get("aliases") or [l2_name]
                 l2_hits = count_term_hits(text, l2_aliases)
                 if l2_hits > 0:
-                    level2_counter[(level1_name, l2_name)] += l2_hits
+                    hot_level2[(level1_name, l2_name)] += l2_hits
                     level2_total += l2_hits
 
                 for level3 in level2.get("level3") or []:
@@ -616,24 +521,47 @@ def aggregate_industry_frequency(
                     l3_aliases = level3.get("aliases") or [l3_name]
                     l3_hits = count_term_hits(text, l3_aliases)
                     if l3_hits > 0:
-                        level3_counter[(level1_name, l2_name, l3_name)] += l3_hits
+                        hot_level3[(level1_name, l2_name, l3_name)] += l3_hits
                         level3_total += l3_hits
 
-            total_hits = l1_hits + level2_total + level3_total
-            if total_hits > 0:
-                level1_counter[level1_name] += total_hits
+                    level4_terms = level3.get("level4") or []
+                    if not isinstance(level4_terms, list):
+                        level4_terms = []
+                    # A股默认三级词表无level4时，回退到将三级作为四级，以支持同层级top对比。
+                    if not level4_terms:
+                        level4_terms = [{"name": l3_name, "aliases": l3_aliases}]
+                    for level4 in level4_terms:
+                        l4_name = str(level4.get("name") or "").strip()
+                        if not l4_name:
+                            continue
+                        l4_aliases = level4.get("aliases") or [l4_name]
+                        l4_hits = count_term_hits(text, l4_aliases)
+                        if l4_hits > 0:
+                            hot_level4[(level1_name, l2_name, l3_name, l4_name)] += l4_hits
+                            level4_total += l4_hits
 
-    return level1_counter, level2_counter, level3_counter
+            total_hits = l1_hits + level2_total + level3_total + level4_total
+            if total_hits > 0:
+                hot_level1[level1_name] += total_hits
+
+    return {
+        "level1": hot_level1,
+        "level2": hot_level2,
+        "level3": hot_level3,
+        "level4": hot_level4,
+    }
 
 
 def write_blank_row(writer: csv.DictWriter) -> None:
     writer.writerow(
         {
+            "market": "",
             "level": "",
             "rank": "",
             "level1_industry": "",
             "level2_industry": "",
             "level3_industry": "",
+            "level4_industry": "",
             "frequency": "",
             "lookback_days": "",
             "start_date": "",
@@ -643,11 +571,51 @@ def write_blank_row(writer: csv.DictWriter) -> None:
     )
 
 
+def write_rows_for_level(
+    writer: csv.DictWriter,
+    market: str,
+    level: str,
+    rows: Iterable[tuple[Any, int]],
+    lookback_days: int,
+    start_date: str,
+    end_date: str,
+    news_count: int,
+) -> None:
+    for rank, (keys, freq) in enumerate(rows, start=1):
+        level1 = ""
+        level2 = ""
+        level3 = ""
+        level4 = ""
+        if level == "level1":
+            level1 = str(keys)
+        elif level == "level2":
+            level1, level2 = keys
+        elif level == "level3":
+            level1, level2, level3 = keys
+        elif level == "level4":
+            level1, level2, level3, level4 = keys
+
+        writer.writerow(
+            {
+                "market": market,
+                "level": level,
+                "rank": rank,
+                "level1_industry": level1,
+                "level2_industry": level2,
+                "level3_industry": level3,
+                "level4_industry": level4,
+                "frequency": freq,
+                "lookback_days": lookback_days,
+                "start_date": start_date,
+                "end_date": end_date,
+                "news_count": news_count,
+            }
+        )
+
+
 def write_result_csv(
     output_path: Path,
-    top_level1_rows: list[tuple[str, int]],
-    top_level2_rows: list[tuple[tuple[str, str], int]],
-    top_level3_rows: list[tuple[tuple[str, str, str], int]],
+    market_rows: list[dict[str, Any]],
     lookback_days: int,
     start_date: str,
     end_date: str,
@@ -655,11 +623,13 @@ def write_result_csv(
 ) -> None:
     ensure_parent_dir(output_path)
     headers = [
+        "market",
         "level",
         "rank",
         "level1_industry",
         "level2_industry",
         "level3_industry",
+        "level4_industry",
         "frequency",
         "lookback_days",
         "start_date",
@@ -670,57 +640,116 @@ def write_result_csv(
         writer = csv.DictWriter(f, fieldnames=headers)
         writer.writeheader()
 
-        for rank, (level1, freq) in enumerate(top_level1_rows, start=1):
-            writer.writerow(
-                {
-                    "level": "level1",
-                    "rank": rank,
-                    "level1_industry": level1,
-                    "level2_industry": "",
-                    "level3_industry": "",
-                    "frequency": freq,
-                    "lookback_days": lookback_days,
-                    "start_date": start_date,
-                    "end_date": end_date,
-                    "news_count": news_count,
-                }
+        for idx, block in enumerate(market_rows):
+            market = str(block["market"])
+            write_rows_for_level(
+                writer,
+                market=market,
+                level="level1",
+                rows=block.get("level1_rows", []),
+                lookback_days=lookback_days,
+                start_date=start_date,
+                end_date=end_date,
+                news_count=news_count,
             )
-
-        write_blank_row(writer)
-
-        for rank, ((level1, level2), freq) in enumerate(top_level2_rows, start=1):
-            writer.writerow(
-                {
-                    "level": "level2",
-                    "rank": rank,
-                    "level1_industry": level1,
-                    "level2_industry": level2,
-                    "level3_industry": "",
-                    "frequency": freq,
-                    "lookback_days": lookback_days,
-                    "start_date": start_date,
-                    "end_date": end_date,
-                    "news_count": news_count,
-                }
+            write_blank_row(writer)
+            write_rows_for_level(
+                writer,
+                market=market,
+                level="level2",
+                rows=block.get("level2_rows", []),
+                lookback_days=lookback_days,
+                start_date=start_date,
+                end_date=end_date,
+                news_count=news_count,
             )
-
-        write_blank_row(writer)
-
-        for rank, ((level1, level2, level3), freq) in enumerate(top_level3_rows, start=1):
-            writer.writerow(
-                {
-                    "level": "level3",
-                    "rank": rank,
-                    "level1_industry": level1,
-                    "level2_industry": level2,
-                    "level3_industry": level3,
-                    "frequency": freq,
-                    "lookback_days": lookback_days,
-                    "start_date": start_date,
-                    "end_date": end_date,
-                    "news_count": news_count,
-                }
+            write_blank_row(writer)
+            write_rows_for_level(
+                writer,
+                market=market,
+                level="level3",
+                rows=block.get("level3_rows", []),
+                lookback_days=lookback_days,
+                start_date=start_date,
+                end_date=end_date,
+                news_count=news_count,
             )
+            write_blank_row(writer)
+            write_rows_for_level(
+                writer,
+                market=market,
+                level="level4",
+                rows=block.get("level4_rows", []),
+                lookback_days=lookback_days,
+                start_date=start_date,
+                end_date=end_date,
+                news_count=news_count,
+            )
+            if idx < len(market_rows) - 1:
+                write_blank_row(writer)
+                write_blank_row(writer)
+
+
+def fetch_public_media_rss(
+    client: RetryClient,
+    lookback_days: int,
+    max_items_per_feed: int,
+    now: datetime,
+) -> tuple[list[NewsItem], list[dict[str, str]]]:
+    cutoff = now - timedelta(days=max(1, lookback_days))
+    collected: list[NewsItem] = []
+    errors: list[dict[str, str]] = []
+    for feed in PUBLIC_MEDIA_RSS_FEEDS:
+        feed_name = str(feed.get("name") or "").strip()
+        feed_url = str(feed.get("url") or "").strip()
+        if not feed_name or not feed_url:
+            continue
+        try:
+            xml_text = client.get_text(feed_url)
+            parsed = parse_rss_items(
+                xml_text=xml_text,
+                query=feed_url,
+                source_name=f"public_rss:{feed_name}",
+                now=now,
+                max_items=max_items_per_feed,
+            )
+            for item in parsed:
+                if item.published_at >= cutoff:
+                    collected.append(item)
+        except Exception as exc:  # noqa: BLE001
+            errors.append({"source": "public_rss", "query": feed_name, "error": str(exc)})
+    return collected, errors
+
+
+def fetch_baidu_rss(
+    client: RetryClient,
+    lookback_days: int,
+    max_items_per_feed: int,
+    now: datetime,
+) -> tuple[list[NewsItem], list[dict[str, str]]]:
+    cutoff = now - timedelta(days=max(1, lookback_days))
+    collected: list[NewsItem] = []
+    errors: list[dict[str, str]] = []
+    for feed in BAIDU_RSS_FEEDS:
+        feed_name = str(feed.get("name") or "").strip()
+        feed_url = str(feed.get("url") or "").strip()
+        if not feed_name or not feed_url:
+            continue
+        try:
+            xml_text = client.get_text(feed_url)
+            parsed = parse_rss_items(
+                xml_text=xml_text,
+                query=feed_url,
+                source_name=f"baidu:{feed_name}",
+                now=now,
+                max_items=max_items_per_feed,
+            )
+            for item in parsed:
+                if item.published_at >= cutoff:
+                    collected.append(item)
+        except Exception as exc:  # noqa: BLE001
+            errors.append({"source": "baidu", "query": feed_name, "error": str(exc)})
+    return collected, errors
 
 
 def fetch_by_source(
@@ -733,6 +762,8 @@ def fetch_by_source(
 ) -> list[NewsItem]:
     if source == "bing":
         return fetch_bing_news_rss(client, query, lookback_days, max_items_per_query, now)
+    if source == "msn_edge":
+        return fetch_msn_edge_news_rss(client, query, lookback_days, max_items_per_query, now)
     if source == "google":
         return fetch_google_news_rss(
             client,
@@ -759,7 +790,90 @@ def fetch_by_source(
         )
     if source == "gdelt":
         return fetch_gdelt_items(client, query, lookback_days, max_items_per_query, now)
+    if source == "public_rss":
+        return []
+    if source == "baidu":
+        return []
     raise ValueError(f"unsupported source: {source}")
+
+
+def get_taxonomy_level_counts(taxonomy: list[dict[str, Any]]) -> dict[str, int]:
+    level1 = len(taxonomy)
+    level2 = sum(len(item.get("level2") or []) for item in taxonomy)
+    level3 = sum(len(level2_item.get("level3") or []) for item in taxonomy for level2_item in item.get("level2") or [])
+    level4 = sum(
+        len(level3_item.get("level4") or [])
+        for item in taxonomy
+        for level2_item in item.get("level2") or []
+        for level3_item in level2_item.get("level3") or []
+    )
+    # A股默认三级词表无level4时，按三级数量回填四级统计，方便与美股同层级对齐。
+    if level4 == 0:
+        level4 = level3
+    return {"level1": level1, "level2": level2, "level3": level3, "level4": level4}
+
+
+def build_universe_keys(taxonomy: list[dict[str, Any]]) -> dict[str, list[Any]]:
+    keys_level1: list[str] = []
+    keys_level2: list[tuple[str, str]] = []
+    keys_level3: list[tuple[str, str, str]] = []
+    keys_level4: list[tuple[str, str, str, str]] = []
+    for sector in taxonomy:
+        level1_name = str(sector.get("level1") or "").strip()
+        if not level1_name:
+            continue
+        keys_level1.append(level1_name)
+        for level2 in sector.get("level2") or []:
+            level2_name = str(level2.get("name") or "").strip()
+            if not level2_name:
+                continue
+            keys_level2.append((level1_name, level2_name))
+            for level3 in level2.get("level3") or []:
+                level3_name = str(level3.get("name") or "").strip()
+                if not level3_name:
+                    continue
+                keys_level3.append((level1_name, level2_name, level3_name))
+                level4_items = level3.get("level4") or []
+                if not level4_items:
+                    keys_level4.append((level1_name, level2_name, level3_name, level3_name))
+                    continue
+                for level4 in level4_items:
+                    level4_name = str(level4.get("name") or "").strip()
+                    if not level4_name:
+                        continue
+                    keys_level4.append((level1_name, level2_name, level3_name, level4_name))
+    return {
+        "level1": keys_level1,
+        "level2": keys_level2,
+        "level3": keys_level3,
+        "level4": keys_level4,
+    }
+
+
+def pick_top_rows(counter: Counter[Any], universe_keys: list[Any], top_n: int) -> list[tuple[Any, int]]:
+    wanted = max(1, top_n)
+    picked = counter.most_common(wanted)
+    seen = {item[0] for item in picked}
+    if len(picked) >= wanted:
+        return picked
+    for key in universe_keys:
+        if key in seen:
+            continue
+        picked.append((key, 0))
+        seen.add(key)
+        if len(picked) >= wanted:
+            break
+    return picked
+
+
+def format_counter_rows(counter_rows: list[tuple[Any, int]]) -> list[dict[str, Any]]:
+    out_rows: list[dict[str, Any]] = []
+    for key, frequency in counter_rows:
+        if isinstance(key, tuple):
+            out_rows.append({"path": list(key), "frequency": frequency})
+        else:
+            out_rows.append({"path": [str(key)], "frequency": frequency})
+    return out_rows
 
 
 def main() -> None:
@@ -769,6 +883,7 @@ def main() -> None:
     top_level1 = max(1, args.top_level1)
     top_level2 = max(1, args.top_level2)
     top_level3 = max(1, args.top_level3)
+    top_level4 = max(1, args.top_level4)
 
     script_dir = Path(__file__).resolve().parent
     repo_root = script_dir.parent
@@ -777,16 +892,44 @@ def main() -> None:
         if args.output_path
         else repo_root / "output" / f"industry_term_frequency_{now.strftime('%Y%m%d')}.csv"
     )
-    taxonomy_path = Path(args.taxonomy_path) if args.taxonomy_path else None
+    a_taxonomy_path = (
+        Path(args.taxonomy_path)
+        if args.taxonomy_path
+        else resolve_default_taxonomy_path(
+            script_dir,
+            default_rel_path=DEFAULT_A_SHARE_TAXONOMY_FILE,
+            legacy_file_name="a_share_sw_taxonomy.json",
+        )
+    )
+    us_taxonomy_path = (
+        Path(args.us_taxonomy_path)
+        if args.us_taxonomy_path
+        else resolve_default_taxonomy_path(
+            script_dir,
+            default_rel_path=DEFAULT_US_TAXONOMY_FILE,
+            legacy_file_name="gics_us_taxonomy.json",
+        )
+    )
 
-    taxonomy = load_taxonomy(taxonomy_path)
-    if not taxonomy:
-        raise ValueError("行业词表为空，无法执行。")
+    a_taxonomy = load_taxonomy(a_taxonomy_path, default_taxonomy=DEFAULT_TAXONOMY)
+    us_taxonomy = load_taxonomy(us_taxonomy_path, default_taxonomy=[])
+    if not a_taxonomy:
+        raise ValueError(
+            f"A股行业词表为空，无法执行。请检查 --taxonomy-path 或 src/{DEFAULT_A_SHARE_TAXONOMY_FILE}。"
+        )
+    if not us_taxonomy:
+        raise ValueError(f"美股GICS词表为空，无法执行。请检查 --us-taxonomy-path 或 src/{DEFAULT_US_TAXONOMY_FILE}。")
 
-    queries = build_queries(taxonomy, args.query)
+    queries = build_queries(a_taxonomy, args.query)
+    us_sector_queries = [
+        f"{str(item.get('level1') or '').strip()} sector news"
+        for item in us_taxonomy
+        if str(item.get("level1") or "").strip()
+    ]
+    queries = list(dict.fromkeys([*queries, *us_sector_queries]))
     sources = [s.strip().lower() for s in str(args.sources).split(",") if s.strip()]
     if not sources:
-        sources = ["bing", "google", "google_en", "gdelt"]
+        sources = ["public_rss", "baidu", "bing", "msn_edge", "google", "google_en", "gdelt"]
 
     client = RetryClient(max_retry=max(1, args.max_retry), timeout_sec=30)
     all_items: list[NewsItem] = []
@@ -795,10 +938,47 @@ def main() -> None:
     source_item_counts: Counter[str] = Counter()
     source_success_queries: Counter[str] = Counter()
 
+    if "public_rss" in sources:
+        rss_items, rss_errors = fetch_public_media_rss(
+            client=client,
+            lookback_days=lookback_days,
+            max_items_per_feed=max(10, args.max_items_per_feed),
+            now=now,
+        )
+        source_item_counts["public_rss"] += len(rss_items)
+        if rss_items:
+            source_success_queries["public_rss"] += 1
+        failed_queries.extend(rss_errors)
+        for item in rss_items:
+            key = f"{item.title}|{item.published_at.strftime('%Y-%m-%d %H')}"
+            if key in dedup_keys:
+                continue
+            dedup_keys.add(key)
+            all_items.append(item)
+
+    if "baidu" in sources:
+        baidu_items, baidu_errors = fetch_baidu_rss(
+            client=client,
+            lookback_days=lookback_days,
+            max_items_per_feed=max(10, args.max_items_per_feed),
+            now=now,
+        )
+        source_item_counts["baidu"] += len(baidu_items)
+        if baidu_items:
+            source_success_queries["baidu"] += 1
+        failed_queries.extend(baidu_errors)
+        for item in baidu_items:
+            key = f"{item.title}|{item.published_at.strftime('%Y-%m-%d %H')}"
+            if key in dedup_keys:
+                continue
+            dedup_keys.add(key)
+            all_items.append(item)
+
+    query_sources = [source for source in sources if source not in {"public_rss", "baidu"}]
     for query in queries:
         per_query_items: list[NewsItem] = []
         query_has_result = False
-        for source in sources:
+        for source in query_sources:
             try:
                 items = fetch_by_source(
                     source=source,
@@ -828,18 +1008,43 @@ def main() -> None:
             dedup_keys.add(key)
             all_items.append(item)
 
-    level1_counter, level2_counter, level3_counter = aggregate_industry_frequency(all_items, taxonomy)
-    top_level1_rows = level1_counter.most_common(top_level1)
-    top_level2_rows = level2_counter.most_common(top_level2)
-    top_level3_rows = level3_counter.most_common(top_level3)
+    a_stats = aggregate_industry_frequency(all_items, a_taxonomy)
+    us_stats = aggregate_industry_frequency(all_items, us_taxonomy)
+    a_universe = build_universe_keys(a_taxonomy)
+    us_universe = build_universe_keys(us_taxonomy)
+
+    a_hot_l1 = pick_top_rows(a_stats["level1"], a_universe["level1"], top_level1)
+    a_hot_l2 = pick_top_rows(a_stats["level2"], a_universe["level2"], top_level2)
+    a_hot_l3 = pick_top_rows(a_stats["level3"], a_universe["level3"], top_level3)
+    a_hot_l4 = pick_top_rows(a_stats["level4"], a_universe["level4"], top_level4)
+
+    us_hot_l1 = pick_top_rows(us_stats["level1"], us_universe["level1"], top_level1)
+    us_hot_l2 = pick_top_rows(us_stats["level2"], us_universe["level2"], top_level2)
+    us_hot_l3 = pick_top_rows(us_stats["level3"], us_universe["level3"], top_level3)
+    us_hot_l4 = pick_top_rows(us_stats["level4"], us_universe["level4"], top_level4)
+
+    market_rows = [
+        {
+            "market": "a_share",
+            "level1_rows": a_hot_l1,
+            "level2_rows": a_hot_l2,
+            "level3_rows": a_hot_l3,
+            "level4_rows": a_hot_l4,
+        },
+        {
+            "market": "us_gics",
+            "level1_rows": us_hot_l1,
+            "level2_rows": us_hot_l2,
+            "level3_rows": us_hot_l3,
+            "level4_rows": us_hot_l4,
+        },
+    ]
 
     start_date = (now - timedelta(days=lookback_days)).strftime("%Y-%m-%d")
     end_date = now.strftime("%Y-%m-%d")
     write_result_csv(
         output_path=output_path,
-        top_level1_rows=top_level1_rows,
-        top_level2_rows=top_level2_rows,
-        top_level3_rows=top_level3_rows,
+        market_rows=market_rows,
         lookback_days=lookback_days,
         start_date=start_date,
         end_date=end_date,
@@ -859,15 +1064,30 @@ def main() -> None:
                 "source_success_queries": dict(source_success_queries),
                 "failed_query_count": len(failed_queries),
                 "failed_queries_sample": failed_queries[:20],
-                "top_level1_count": len(top_level1_rows),
-                "top_level2_count": len(top_level2_rows),
-                "top_level3_count": len(top_level3_rows),
-                "top_level1": [{"industry": k, "frequency": v} for k, v in top_level1_rows],
-                "top_level2": [{"level1": k[0], "industry": k[1], "frequency": v} for k, v in top_level2_rows],
-                "top_level3": [
-                    {"level1": k[0], "level2": k[1], "industry": k[2], "frequency": v}
-                    for k, v in top_level3_rows
-                ],
+                "top_n": {
+                    "level1": top_level1,
+                    "level2": top_level2,
+                    "level3": top_level3,
+                    "level4": top_level4,
+                },
+                "taxonomy_counts": {
+                    "a_share": get_taxonomy_level_counts(a_taxonomy),
+                    "us_gics": get_taxonomy_level_counts(us_taxonomy),
+                },
+                "market_results": {
+                    "a_share": {
+                        "level1": format_counter_rows(a_hot_l1),
+                        "level2": format_counter_rows(a_hot_l2),
+                        "level3": format_counter_rows(a_hot_l3),
+                        "level4": format_counter_rows(a_hot_l4),
+                    },
+                    "us_gics": {
+                        "level1": format_counter_rows(us_hot_l1),
+                        "level2": format_counter_rows(us_hot_l2),
+                        "level3": format_counter_rows(us_hot_l3),
+                        "level4": format_counter_rows(us_hot_l4),
+                    },
+                },
                 "warning": (
                     "no news collected; check failed_queries_sample and network/proxy settings"
                     if len(all_items) == 0
@@ -882,3 +1102,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

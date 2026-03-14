@@ -15,13 +15,16 @@ Analysis/
 │   └── templates/
 │       └── output_template.xlsx
 ├── output/                     # 分析产物目录（默认输出，已忽略）
-├── src/                        # 所有可执行脚本入口
+├── src/                        # 可执行脚本与内置词表
 │   ├── README.md               # 脚本索引与运行指令
 │   ├── scan_a_share_quarterly_revenue_growth.py
 │   ├── run_once_a_share_2025q4_24h_scan.py
 │   ├── scan_a_share_interval_change.py
 │   ├── run_revenue_event_analysis.py
-│   └── scan_industry_term_frequency.py
+│   ├── scan_industry_term_frequency.py
+│   └── taxonomy/
+│       ├── a_share_sw_taxonomy.json
+│       └── gics_us_taxonomy.json
 ├── tests/
 ├── .gitignore
 ├── LICENSE
