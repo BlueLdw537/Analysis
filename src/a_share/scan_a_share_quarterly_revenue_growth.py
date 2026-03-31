@@ -662,7 +662,7 @@ def main() -> None:
     ]
 
     workbook: Workbook | None = None
-    repo_root = Path(__file__).resolve().parent.parent
+    repo_root = Path(__file__).resolve().parents[2]
     template_path = repo_root / "docs" / "templates" / "output_template.xlsx"
     if template_path.exists():
         try:

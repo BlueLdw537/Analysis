@@ -13,19 +13,26 @@ from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Any, Iterable
 from urllib.parse import quote_plus
+from urllib.request import Request, build_opener
 
-import requests
+try:
+    import requests
+except ImportError:
+    requests = None
 
 
 DEFAULT_A_SHARE_TAXONOMY_FILE = "taxonomy/a_share_sw_taxonomy.json"
 DEFAULT_US_TAXONOMY_FILE = "taxonomy/gics_us_taxonomy.json"
 DEFAULT_TAXONOMY: list[dict[str, Any]] = []
 
-DEFAULT_QUERIES = [
+DEFAULT_A_SHARE_QUERIES = [
     "中国 产业 政策",
     "中国 行业 新闻",
     "A股 行业",
     "宏观 经济 产业链",
+]
+
+DEFAULT_US_QUERIES = [
     "US stock sector news",
     "S&P 500 industry news",
     "Wall Street sector rotation",
@@ -70,26 +77,46 @@ class RetryClient:
     def __init__(self, max_retry: int, timeout_sec: int = 30) -> None:
         self.max_retry = max_retry
         self.timeout_sec = timeout_sec
-        self.session = requests.Session()
-        self.session.trust_env = True
-        self.session.headers.update(
-            {
-                "User-Agent": (
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                    "AppleWebKit/537.36 (KHTML, like Gecko) "
-                    "Chrome/124.0.0.0 Safari/537.36"
-                )
-            }
+        self.user_agent = (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0.0.0 Safari/537.36"
         )
+        self.session = None
+        self.opener = None
+        if requests is not None:
+            self.session = requests.Session()
+            self.session.trust_env = True
+            self.session.headers.update({"User-Agent": self.user_agent})
+        else:
+            self.opener = build_opener()
+
+    @staticmethod
+    def _decode_bytes(payload: bytes, charset: str | None) -> str:
+        encodings = [charset, "utf-8", "utf-8-sig", "gb18030", "latin-1"]
+        for encoding in encodings:
+            if not encoding:
+                continue
+            try:
+                return payload.decode(encoding)
+            except UnicodeDecodeError:
+                continue
+        return payload.decode("utf-8", errors="replace")
 
     def get_text(self, url: str) -> str:
         last_exc: Exception | None = None
         for attempt in range(1, self.max_retry + 1):
             try:
-                resp = self.session.get(url, timeout=self.timeout_sec)
-                resp.raise_for_status()
-                resp.encoding = resp.apparent_encoding or resp.encoding
-                return resp.text
+                if self.session is not None:
+                    resp = self.session.get(url, timeout=self.timeout_sec)
+                    resp.raise_for_status()
+                    resp.encoding = resp.apparent_encoding or resp.encoding
+                    return resp.text
+
+                request = Request(url, headers={"User-Agent": self.user_agent})
+                with self.opener.open(request, timeout=self.timeout_sec) as resp:
+                    charset = resp.headers.get_content_charset()
+                    return self._decode_bytes(resp.read(), charset)
             except Exception as exc:  # noqa: BLE001
                 last_exc = exc
                 if attempt >= self.max_retry:
@@ -112,14 +139,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--top-level2", type=int, default=5, help="输出二级行业TopN，默认5")
     parser.add_argument("--top-level3", type=int, default=10, help="输出三级行业TopN，默认10")
     parser.add_argument("--top-level4", type=int, default=15, help="输出四级行业TopN，默认15")
+    parser.add_argument("--target-news-count", type=int, default=1000, help="单个市场累计去重新闻达到该条数后提前结束，默认1000")
     parser.add_argument("--output-path", default="", help="输出CSV路径")
     parser.add_argument("--max-retry", type=int, default=3, help="网络重试次数，默认3")
     parser.add_argument("--max-items-per-query", type=int, default=120, help="每个查询最多解析条目数")
     parser.add_argument("--max-items-per-feed", type=int, default=80, help="每个公开RSS最多解析条目数")
     parser.add_argument(
         "--sources",
-        default="public_rss,baidu,bing,msn_edge,google,google_en,gdelt",
-        help="新闻源，逗号分隔：public_rss,baidu,bing,msn_edge,google,google_en,gdelt",
+        default="baidu,bing,google",
+        help="新闻源，逗号分隔：baidu,bing,google",
     )
     parser.add_argument(
         "--query",
@@ -234,8 +262,12 @@ def fetch_bing_news_rss(
     lookback_days: int,
     max_items_per_query: int,
     now: datetime,
+    set_lang: str = "zh-Hans",
+    market_code: str = "",
 ) -> list[NewsItem]:
-    url = f"https://www.bing.com/news/search?q={quote_plus(query)}&format=rss&setlang=zh-Hans"
+    url = f"https://www.bing.com/news/search?q={quote_plus(query)}&format=rss&setlang={quote_plus(set_lang)}"
+    if market_code:
+        url += f"&mkt={quote_plus(market_code)}"
     xml_text = client.get_text(url)
     parsed = parse_rss_items(xml_text, query=query, source_name="bing", now=now, max_items=max_items_per_query)
     cutoff = now - timedelta(days=max(1, lookback_days))
@@ -437,27 +469,32 @@ def load_taxonomy(
 
 
 def resolve_default_taxonomy_path(script_dir: Path, default_rel_path: str, legacy_file_name: str) -> Path:
-    default_path = script_dir / default_rel_path
+    src_dir = script_dir.parent if script_dir.name == "monitoring" else script_dir
+    default_path = src_dir / default_rel_path
     if default_path.exists():
         return default_path
-    legacy_path = script_dir / legacy_file_name
+    legacy_path = src_dir / legacy_file_name
     if legacy_path.exists():
         return legacy_path
     return default_path
 
 
-def build_queries(taxonomy: list[dict[str, Any]], custom_queries: list[str]) -> list[str]:
+def build_queries(
+    taxonomy: list[dict[str, Any]],
+    custom_queries: list[str],
+    default_queries: list[str],
+    query_builder: Any,
+) -> list[str]:
     queries = [q.strip() for q in custom_queries if q.strip()]
     if queries:
         return list(dict.fromkeys(queries))
 
-    auto_queries = list(DEFAULT_QUERIES)
+    auto_queries = list(default_queries)
     for item in taxonomy:
         level1 = str(item.get("level1") or "").strip()
         if not level1:
             continue
-        auto_queries.append(f"{level1} 行业 政策")
-        auto_queries.append(f"{level1} 行业 新闻")
+        auto_queries.extend(query_builder(level1))
     return list(dict.fromkeys(auto_queries))
 
 
@@ -642,6 +679,7 @@ def write_result_csv(
 
         for idx, block in enumerate(market_rows):
             market = str(block["market"])
+            market_news_count = int(block.get("news_count", news_count))
             write_rows_for_level(
                 writer,
                 market=market,
@@ -650,7 +688,7 @@ def write_result_csv(
                 lookback_days=lookback_days,
                 start_date=start_date,
                 end_date=end_date,
-                news_count=news_count,
+                news_count=market_news_count,
             )
             write_blank_row(writer)
             write_rows_for_level(
@@ -661,7 +699,7 @@ def write_result_csv(
                 lookback_days=lookback_days,
                 start_date=start_date,
                 end_date=end_date,
-                news_count=news_count,
+                news_count=market_news_count,
             )
             write_blank_row(writer)
             write_rows_for_level(
@@ -672,7 +710,7 @@ def write_result_csv(
                 lookback_days=lookback_days,
                 start_date=start_date,
                 end_date=end_date,
-                news_count=news_count,
+                news_count=market_news_count,
             )
             write_blank_row(writer)
             write_rows_for_level(
@@ -683,7 +721,7 @@ def write_result_csv(
                 lookback_days=lookback_days,
                 start_date=start_date,
                 end_date=end_date,
-                news_count=news_count,
+                news_count=market_news_count,
             )
             if idx < len(market_rows) - 1:
                 write_blank_row(writer)
@@ -759,12 +797,33 @@ def fetch_by_source(
     lookback_days: int,
     max_items_per_query: int,
     now: datetime,
+    market: str,
 ) -> list[NewsItem]:
     if source == "bing":
+        if market == "us_gics":
+            return fetch_bing_news_rss(
+                client,
+                query,
+                lookback_days,
+                max_items_per_query,
+                now,
+                set_lang="en-US",
+                market_code="en-US",
+            )
         return fetch_bing_news_rss(client, query, lookback_days, max_items_per_query, now)
-    if source == "msn_edge":
-        return fetch_msn_edge_news_rss(client, query, lookback_days, max_items_per_query, now)
     if source == "google":
+        if market == "us_gics":
+            return fetch_google_news_rss(
+                client,
+                query,
+                lookback_days,
+                max_items_per_query,
+                now,
+                source_name="google",
+                hl="en-US",
+                gl="US",
+                ceid="US:en",
+            )
         return fetch_google_news_rss(
             client,
             query,
@@ -776,22 +835,6 @@ def fetch_by_source(
             gl="CN",
             ceid="CN:zh-Hans",
         )
-    if source == "google_en":
-        return fetch_google_news_rss(
-            client,
-            query,
-            lookback_days,
-            max_items_per_query,
-            now,
-            source_name="google_en",
-            hl="en-US",
-            gl="US",
-            ceid="US:en",
-        )
-    if source == "gdelt":
-        return fetch_gdelt_items(client, query, lookback_days, max_items_per_query, now)
-    if source == "public_rss":
-        return []
     if source == "baidu":
         return []
     raise ValueError(f"unsupported source: {source}")
@@ -876,6 +919,107 @@ def format_counter_rows(counter_rows: list[tuple[Any, int]]) -> list[dict[str, A
     return out_rows
 
 
+def append_unique_items(
+    all_items: list[NewsItem],
+    dedup_keys: set[str],
+    new_items: Iterable[NewsItem],
+    target_news_count: int,
+) -> bool:
+    for item in new_items:
+        key = f"{item.title}|{item.published_at.strftime('%Y-%m-%d %H')}"
+        if key in dedup_keys:
+            continue
+        dedup_keys.add(key)
+        all_items.append(item)
+        if target_news_count > 0 and len(all_items) >= target_news_count:
+            return True
+    return False
+
+
+def resolve_market_sources(requested_sources: list[str], market: str) -> list[str]:
+    allowed_sources = {"baidu", "bing", "google"}
+    filtered = [source for source in requested_sources if source in allowed_sources]
+    if market == "us_gics":
+        filtered = [source for source in filtered if source != "baidu"]
+    return list(dict.fromkeys(filtered))
+
+
+def collect_market_news(
+    market: str,
+    queries: list[str],
+    sources: list[str],
+    client: RetryClient,
+    lookback_days: int,
+    max_items_per_query: int,
+    max_items_per_feed: int,
+    target_news_count: int,
+    now: datetime,
+    debug: bool,
+) -> dict[str, Any]:
+    all_items: list[NewsItem] = []
+    dedup_keys: set[str] = set()
+    failed_queries: list[dict[str, str]] = []
+    source_item_counts: Counter[str] = Counter()
+    source_success_queries: Counter[str] = Counter()
+    target_reached = False
+
+    if market == "a_share" and "baidu" in sources:
+        baidu_items, baidu_errors = fetch_baidu_rss(
+            client=client,
+            lookback_days=lookback_days,
+            max_items_per_feed=max(10, max_items_per_feed),
+            now=now,
+        )
+        source_item_counts["baidu"] += len(baidu_items)
+        if baidu_items:
+            source_success_queries["baidu"] += 1
+        failed_queries.extend(baidu_errors)
+        target_reached = append_unique_items(all_items, dedup_keys, baidu_items, target_news_count)
+
+    query_sources = [source for source in sources if source != "baidu"]
+    for query in queries:
+        if target_reached:
+            break
+        query_has_result = False
+        for source in query_sources:
+            if target_reached:
+                break
+            try:
+                items = fetch_by_source(
+                    source=source,
+                    client=client,
+                    query=query,
+                    lookback_days=lookback_days,
+                    max_items_per_query=max(10, max_items_per_query),
+                    now=now,
+                    market=market,
+                )
+            except Exception as exc:  # noqa: BLE001
+                failed_queries.append({"query": query, "source": source, "error": str(exc)})
+                continue
+
+            if items:
+                query_has_result = True
+                source_success_queries[source] += 1
+                source_item_counts[source] += len(items)
+                target_reached = append_unique_items(all_items, dedup_keys, items, target_news_count)
+
+        if not query_has_result and debug:
+            failed_queries.append({"query": query, "source": ",".join(sources), "error": "empty result"})
+
+    return {
+        "market": market,
+        "items": all_items,
+        "sources": sources,
+        "target_reached": target_reached,
+        "failed_queries": failed_queries,
+        "source_item_counts": dict(source_item_counts),
+        "source_success_queries": dict(source_success_queries),
+        "news_count": len(all_items),
+        "query_count": len(queries),
+    }
+
+
 def main() -> None:
     args = parse_args()
     now = datetime.now()
@@ -884,9 +1028,10 @@ def main() -> None:
     top_level2 = max(1, args.top_level2)
     top_level3 = max(1, args.top_level3)
     top_level4 = max(1, args.top_level4)
+    target_news_count = max(0, args.target_news_count)
 
     script_dir = Path(__file__).resolve().parent
-    repo_root = script_dir.parent
+    repo_root = script_dir.parents[1]
     output_path = (
         Path(args.output_path)
         if args.output_path
@@ -920,96 +1065,56 @@ def main() -> None:
     if not us_taxonomy:
         raise ValueError(f"美股GICS词表为空，无法执行。请检查 --us-taxonomy-path 或 src/{DEFAULT_US_TAXONOMY_FILE}。")
 
-    queries = build_queries(a_taxonomy, args.query)
-    us_sector_queries = [
-        f"{str(item.get('level1') or '').strip()} sector news"
-        for item in us_taxonomy
-        if str(item.get("level1") or "").strip()
-    ]
-    queries = list(dict.fromkeys([*queries, *us_sector_queries]))
-    sources = [s.strip().lower() for s in str(args.sources).split(",") if s.strip()]
-    if not sources:
-        sources = ["public_rss", "baidu", "bing", "msn_edge", "google", "google_en", "gdelt"]
+    a_queries = build_queries(
+        a_taxonomy,
+        args.query,
+        DEFAULT_A_SHARE_QUERIES,
+        lambda level1: [f"{level1} 行业 政策", f"{level1} 行业 新闻"],
+    )
+    us_queries = build_queries(
+        us_taxonomy,
+        args.query,
+        DEFAULT_US_QUERIES,
+        lambda level1: [f"{level1} sector news"],
+    )
+    requested_sources = [s.strip().lower() for s in str(args.sources).split(",") if s.strip()]
+    if not requested_sources:
+        requested_sources = ["baidu", "bing", "google"]
+    a_sources = resolve_market_sources(requested_sources, "a_share")
+    us_sources = resolve_market_sources(requested_sources, "us_gics")
 
     client = RetryClient(max_retry=max(1, args.max_retry), timeout_sec=30)
-    all_items: list[NewsItem] = []
-    dedup_keys: set[str] = set()
-    failed_queries: list[dict[str, str]] = []
-    source_item_counts: Counter[str] = Counter()
-    source_success_queries: Counter[str] = Counter()
+    a_result = collect_market_news(
+        market="a_share",
+        queries=a_queries,
+        sources=a_sources,
+        client=client,
+        lookback_days=lookback_days,
+        max_items_per_query=args.max_items_per_query,
+        max_items_per_feed=args.max_items_per_feed,
+        target_news_count=target_news_count,
+        now=now,
+        debug=args.debug,
+    )
+    us_result = collect_market_news(
+        market="us_gics",
+        queries=us_queries,
+        sources=us_sources,
+        client=client,
+        lookback_days=lookback_days,
+        max_items_per_query=args.max_items_per_query,
+        max_items_per_feed=args.max_items_per_feed,
+        target_news_count=target_news_count,
+        now=now,
+        debug=args.debug,
+    )
 
-    if "public_rss" in sources:
-        rss_items, rss_errors = fetch_public_media_rss(
-            client=client,
-            lookback_days=lookback_days,
-            max_items_per_feed=max(10, args.max_items_per_feed),
-            now=now,
-        )
-        source_item_counts["public_rss"] += len(rss_items)
-        if rss_items:
-            source_success_queries["public_rss"] += 1
-        failed_queries.extend(rss_errors)
-        for item in rss_items:
-            key = f"{item.title}|{item.published_at.strftime('%Y-%m-%d %H')}"
-            if key in dedup_keys:
-                continue
-            dedup_keys.add(key)
-            all_items.append(item)
+    a_items = a_result["items"]
+    us_items = us_result["items"]
+    total_news_count = len(a_items) + len(us_items)
 
-    if "baidu" in sources:
-        baidu_items, baidu_errors = fetch_baidu_rss(
-            client=client,
-            lookback_days=lookback_days,
-            max_items_per_feed=max(10, args.max_items_per_feed),
-            now=now,
-        )
-        source_item_counts["baidu"] += len(baidu_items)
-        if baidu_items:
-            source_success_queries["baidu"] += 1
-        failed_queries.extend(baidu_errors)
-        for item in baidu_items:
-            key = f"{item.title}|{item.published_at.strftime('%Y-%m-%d %H')}"
-            if key in dedup_keys:
-                continue
-            dedup_keys.add(key)
-            all_items.append(item)
-
-    query_sources = [source for source in sources if source not in {"public_rss", "baidu"}]
-    for query in queries:
-        per_query_items: list[NewsItem] = []
-        query_has_result = False
-        for source in query_sources:
-            try:
-                items = fetch_by_source(
-                    source=source,
-                    client=client,
-                    query=query,
-                    lookback_days=lookback_days,
-                    max_items_per_query=max(10, args.max_items_per_query),
-                    now=now,
-                )
-            except Exception as exc:  # noqa: BLE001
-                failed_queries.append({"query": query, "source": source, "error": str(exc)})
-                continue
-
-            if items:
-                query_has_result = True
-                source_success_queries[source] += 1
-                source_item_counts[source] += len(items)
-                per_query_items.extend(items)
-
-        if not query_has_result and args.debug:
-            failed_queries.append({"query": query, "source": ",".join(sources), "error": "empty result"})
-
-        for item in per_query_items:
-            key = f"{item.title}|{item.published_at.strftime('%Y-%m-%d %H')}"
-            if key in dedup_keys:
-                continue
-            dedup_keys.add(key)
-            all_items.append(item)
-
-    a_stats = aggregate_industry_frequency(all_items, a_taxonomy)
-    us_stats = aggregate_industry_frequency(all_items, us_taxonomy)
+    a_stats = aggregate_industry_frequency(a_items, a_taxonomy)
+    us_stats = aggregate_industry_frequency(us_items, us_taxonomy)
     a_universe = build_universe_keys(a_taxonomy)
     us_universe = build_universe_keys(us_taxonomy)
 
@@ -1030,6 +1135,7 @@ def main() -> None:
             "level2_rows": a_hot_l2,
             "level3_rows": a_hot_l3,
             "level4_rows": a_hot_l4,
+            "news_count": len(a_items),
         },
         {
             "market": "us_gics",
@@ -1037,6 +1143,7 @@ def main() -> None:
             "level2_rows": us_hot_l2,
             "level3_rows": us_hot_l3,
             "level4_rows": us_hot_l4,
+            "news_count": len(us_items),
         },
     ]
 
@@ -1048,7 +1155,7 @@ def main() -> None:
         lookback_days=lookback_days,
         start_date=start_date,
         end_date=end_date,
-        news_count=len(all_items),
+        news_count=total_news_count,
     )
 
     print(
@@ -1057,13 +1164,31 @@ def main() -> None:
                 "success": True,
                 "output_path": str(output_path.resolve()),
                 "lookback_days": lookback_days,
-                "sources": sources,
-                "query_count": len(queries),
-                "news_count": len(all_items),
-                "source_item_counts": dict(source_item_counts),
-                "source_success_queries": dict(source_success_queries),
-                "failed_query_count": len(failed_queries),
-                "failed_queries_sample": failed_queries[:20],
+                "requested_sources": requested_sources,
+                "news_count": total_news_count,
+                "target_news_count": target_news_count,
+                "market_collection": {
+                    "a_share": {
+                        "sources": a_sources,
+                        "query_count": a_result["query_count"],
+                        "news_count": a_result["news_count"],
+                        "target_reached": a_result["target_reached"],
+                        "source_item_counts": a_result["source_item_counts"],
+                        "source_success_queries": a_result["source_success_queries"],
+                        "failed_query_count": len(a_result["failed_queries"]),
+                        "failed_queries_sample": a_result["failed_queries"][:20],
+                    },
+                    "us_gics": {
+                        "sources": us_sources,
+                        "query_count": us_result["query_count"],
+                        "news_count": us_result["news_count"],
+                        "target_reached": us_result["target_reached"],
+                        "source_item_counts": us_result["source_item_counts"],
+                        "source_success_queries": us_result["source_success_queries"],
+                        "failed_query_count": len(us_result["failed_queries"]),
+                        "failed_queries_sample": us_result["failed_queries"][:20],
+                    },
+                },
                 "top_n": {
                     "level1": top_level1,
                     "level2": top_level2,
@@ -1090,7 +1215,7 @@ def main() -> None:
                 },
                 "warning": (
                     "no news collected; check failed_queries_sample and network/proxy settings"
-                    if len(all_items) == 0
+                    if total_news_count == 0
                     else ""
                 ),
             },

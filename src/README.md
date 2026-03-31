@@ -1,108 +1,48 @@
 # src 脚本索引
 
-本目录仅保留“可直接运行”的功能脚本入口，方便快速执行。
+`src` 只保留三类内容：可执行脚本、行业词表、少量运行文档。
 
-## 快速开始
+## 分组
 
-```powershell
-cd Analysis/src
-python .\scan_a_share_quarterly_revenue_growth.py --help
-```
+### `a_share/`
 
-## 脚本清单
+- `scan_a_share_quarterly_revenue_growth.py`：单季度营收同比扫描
+- `scan_a_share_interval_change.py`：区间涨跌幅筛选
+- `run_a_share_24h_scan_v2.py`：24 小时公告窗口扫描
+- `run_revenue_event_analysis.py`：财报事件后收益/回撤统计
 
-| 脚本 | 作用 | 常用命令 |
-| --- | --- | --- |
-| `scan_a_share_quarterly_revenue_growth.py` | 单季度营收同比扫描（通用版） | `python .\scan_a_share_quarterly_revenue_growth.py --year 2025 --quarter Q4 --growth-threshold 20` |
-| `run_once_a_share_2025q4_24h_scan.py` | 最近 N 小时公告窗口扫描 | `python .\run_once_a_share_2025q4_24h_scan.py --target-year 2025 --target-quarter Q4 --notice-within-hours 24` |
-| `run_a_share_24h_scan_v2.py` | 按 `run_a_share_24h_scan_v2.ps1` 等价重写的 Python 版 24h 扫描 | `python .\run_a_share_24h_scan_v2.py --target-year 2025 --target-quarter Q4 --notice-within-hours 24` |
-| `scan_a_share_interval_change.py` | 按年份区间筛选涨跌幅 | `python .\scan_a_share_interval_change.py --StartYear 2020 --EndYear 2025 --Direction rise --ChangeThresholdPct 200` |
-| `run_revenue_event_analysis.py` | 财报事件后 N 月收益/回撤统计 | `python .\run_revenue_event_analysis.py --Codes 600000,000001 --WindowMonths 2` |
-| `scan_industry_term_frequency.py` | 近 N 天行业词频统计（CSV） | `python .\scan_industry_term_frequency.py --lookback-days 3` |
+### `monitoring/`
 
-## 详细运行示例
+- `scan_industry_term_frequency.py`：行业词频统计
+- `monitor_long_term_theme_heat.py`：按申万行业词表统计公开讨论命中次数 TopN（默认 `bing`，每查询最多 `500` 条）
 
-### 1) 单季度营收同比扫描（通用）
+### `market/`
 
-```powershell
-python .\scan_a_share_quarterly_revenue_growth.py `
-  --year 2025 `
-  --quarter Q4 `
-  --growth-threshold 20 `
-  --output-path ..\output\a_share_2025_q4_scan.xlsx `
-  --max-retry 4
-```
+- `download_ixic_full_history.py`：下载纳指历史数据
 
-### 2) 最近公告窗口扫描（24h 可调）
+### `taxonomy/`
+
+- `a_share_sw_taxonomy.json`：A 股申万行业词表
+- `gics_us_taxonomy.json`：美股 GICS 行业词表
+
+## 常用命令
 
 ```powershell
-python .\run_once_a_share_2025q4_24h_scan.py `
-  --target-year 2025 `
-  --target-quarter Q4 `
-  --notice-within-hours 24 `
-  --growth-threshold 20 `
-  --output-dir ..\output `
-  --max-retry 1
+cd Analysis
+
+.\python.cmd src\a_share\scan_a_share_quarterly_revenue_growth.py --year 2025 --quarter Q4 --growth-threshold 20
+.\python.cmd src\a_share\scan_a_share_interval_change.py --StartYear 2020 --EndYear 2025 --Direction rise --ChangeThresholdPct 200
+.\python.cmd src\a_share\run_a_share_24h_scan_v2.py --target-year 2025 --target-quarter Q4 --notice-within-hours 24
+.\python.cmd src\a_share\run_revenue_event_analysis.py --Codes 600000,000001 --WindowMonths 2
+
+.\python.cmd src\monitoring\scan_industry_term_frequency.py --lookback-days 3
+.\python.cmd src\monitoring\monitor_long_term_theme_heat.py --taxonomy-path .\src\taxonomy\a_share_sw_taxonomy.json --lookback-days 10 --top-n 10 --sources bing --max-items-per-query 500
+
+.\python.cmd src\market\download_ixic_full_history.py --output-dir .\output
 ```
 
-### 3) PowerShell v2 对齐版（Python）（能用）
+## 说明
 
-```powershell
-python .\run_a_share_24h_scan_v2.py `
-  --target-year 2025 `
-  --target-quarter Q4 `
-  --notice-within-hours 24 `
-  --growth-threshold 20 `
-  --output-dir D:\codex\output `
-  --max-retry 4
-```
-
-### 4) 区间涨跌幅扫描
-
-```powershell
-python .\scan_a_share_interval_change.py `
-  --StartYear 2020 `
-  --EndYear 2025 `
-  --Direction rise `
-  --ChangeThresholdPct 200 `
-  --TopN 200 `
-  --OutputPath ..\output\a_share_interval_2020_2025.xlsx
-```
-
-### 5) 营收事件回测
-
-```powershell
-python .\run_revenue_event_analysis.py `
-  --Codes 600000,000001 `
-  --WindowMonths 2 `
-  --YoyThreshold 20 `
-  --ProfitThreshold 20 `
-  --LossThreshold 20 `
-  --OutputDir ..\output
-```
-
-### 6) 行业词频统计
-
-```powershell
-python .\scan_industry_term_frequency.py `
-  --lookback-days 3 `
-  --top-level1 3 `
-  --top-level2 5 `
-  --top-level3 10 `
-  --top-level4 15 `
-  --sources public_rss,baidu,bing,msn_edge,google,google_en,gdelt `
-  --output-path ..\output\industry_term_frequency.csv
-```
-
-- A股行业词表默认读取：`src/taxonomy/a_share_sw_taxonomy.json`（由 AkShare `sw_index_*` 数据生成）
-- 美股行业词表默认读取：`src/taxonomy/gics_us_taxonomy.json`
-
-## 输出目录约定
-
-- 默认输出目录：`Analysis/output`
-- `run_a_share_24h_scan_v2.py` 默认输出目录为：`D:\codex\output`
-- `output/` 下结果文件已在 `.gitignore` 中忽略，不会污染版本库
-
-## 维护说明
-
-- 详细的架构约定与目录职责：`../docs/ARCHITECTURE.md`
+- 默认输出目录是 `Analysis/output/`
+- 新脚本统一写根目录 `output/`
+- 如果当前环境没有系统级 `python`，优先使用仓库内的 `python.cmd`

@@ -812,7 +812,7 @@ def main() -> None:
         stamp = run_time.strftime("%Y%m%d_%H%M%S")
         threshold_tag = format_threshold_for_filename(threshold_pct)
         output_path = (
-            Path(__file__).resolve().parent.parent
+            Path(__file__).resolve().parents[2]
             / "output"
             / f"a_share_interval_{start_year}_{end_year}_{direction}_ge{threshold_tag}_{stamp}.xlsx"
         )
@@ -1040,7 +1040,7 @@ def main() -> None:
         },
     ]
 
-    template_path = Path(__file__).resolve().parent.parent / "docs" / "templates" / "output_template.xlsx"
+    template_path = Path(__file__).resolve().parents[2] / "docs" / "templates" / "output_template.xlsx"
     if template_path.exists():
         try:
             workbook = build_workbook_with_template(template_path, summary_rows, final_rows)

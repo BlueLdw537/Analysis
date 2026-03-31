@@ -1,0 +1,4 @@
+@echo off
+setlocal
+call "%~dp0python.cmd" %*
+exit /b %ERRORLEVEL%

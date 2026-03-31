@@ -1,34 +1,26 @@
 # Analysis
 
-用于 A 股数据扫描与专题分析的脚本仓库，当前聚焦 3 类任务：
-- 财报营收相关扫描
-- 区间涨跌幅筛选
-- 行业词频与主题热度统计
+用于存放可直接运行的市场数据与行业分析脚本。当前目录按职责分成三组：
 
-## 当前目录结构
+- `src/a_share/`：A 股财报、区间涨跌幅、事件回测
+- `src/monitoring/`：行业词频、行业讨论命中统计
+- `src/market/`：指数或宏观市场数据下载
+
+## 目录结构
 
 ```text
 Analysis/
-├── .github/                    # CI 与 issue 模板
-├── docs/
-│   ├── ARCHITECTURE.md         # 架构说明（详细）
-│   └── templates/
-│       └── output_template.xlsx
-├── output/                     # 分析产物目录（默认输出，已忽略）
-├── src/                        # 可执行脚本与内置词表
-│   ├── README.md               # 脚本索引与运行指令
-│   ├── scan_a_share_quarterly_revenue_growth.py
-│   ├── run_once_a_share_2025q4_24h_scan.py
-│   ├── scan_a_share_interval_change.py
-│   ├── run_revenue_event_analysis.py
-│   ├── scan_industry_term_frequency.py
-│   └── taxonomy/
-│       ├── a_share_sw_taxonomy.json
-│       └── gics_us_taxonomy.json
+├── docs/                    # 说明文档与模板
+├── output/                  # 默认输出目录
+├── src/
+│   ├── a_share/             # A 股扫描脚本
+│   ├── monitoring/          # 行业/讨论监控脚本
+│   ├── market/              # 市场数据下载脚本
+│   ├── taxonomy/            # 行业词表
+│   └── README.md            # src 入口索引
 ├── tests/
-├── .gitignore
-├── LICENSE
-├── README.md
+├── python.cmd               # 本地 Python wrapper
+├── py.cmd                   # 兼容 wrapper
 └── requirements.txt
 ```
 
@@ -36,18 +28,8 @@ Analysis/
 
 ```powershell
 cd Analysis
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-pytest -q
+.\python.cmd src\a_share\scan_a_share_quarterly_revenue_growth.py --help
+.\python.cmd src\monitoring\monitor_long_term_theme_heat.py --help
 ```
 
-## 运行脚本
-
-所有脚本运行说明见：
-- [src/README.md](src/README.md)
-
-## 架构说明
-
-完整的目录分层与维护约定见：
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+如果需要完整脚本索引和示例命令，查看 [src/README.md](d:\github\Analysis\src\README.md)。
